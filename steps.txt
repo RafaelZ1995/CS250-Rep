@@ -1,0 +1,14 @@
+get gdx-setup
+start new project
+name : doesnt matter
+name of Game class: Game
+package: core.game
+...
+advanced: request your IDE files
+create project in X directory
+
+go to X\core and replace the src and assets folders with the ones on github rep
+
+open IDE with X as workspace
+import the core and desktop project
+add core project to the buildpath of the desktop project
