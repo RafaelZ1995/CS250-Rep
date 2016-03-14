@@ -196,13 +196,28 @@ public class Play extends GameState {
 
 	@Override
 	public void handleInput() {
-		System.out.println(cl.isPlayerOnGround());
-		if(Gdx.input.isKeyPressed(Keys.SPACE) && cl.isPlayerOnGround())
+		// System.out.println(cl.isPlayerOnGround());
+		// if(Gdx.input.isKeyPressed(Keys.SPACE) && cl.isPlayerOnGround())
+		// 	playerBody.applyForceToCenter(0, 40, true);
+		// if(Gdx.input.isKeyPressed(Keys.LEFT))
+		// 	playerBody.applyForceToCenter(-7, 0, true);
+		// if(Gdx.input.isKeyPressed(Keys.RIGHT))
+		// 	playerBody.applyForceToCenter(7, 0, true);
+		
+		if(MyInput.isPressed(MyInput.BUTTON_SPACEBAR) && cl.isPlayerOnGround())
 			playerBody.applyForceToCenter(0, 40, true);
-		if(Gdx.input.isKeyPressed(Keys.LEFT))
+		
+		if(MyInput.isPressed(MyInput.BUTTON_A))
 			playerBody.applyForceToCenter(-7, 0, true);
-		if(Gdx.input.isKeyPressed(Keys.RIGHT))
+		
+		if(MyInput.isPressed(MyInput.BUTTON_D))
 			playerBody.applyForceToCenter(7, 0, true);
+		
+		if(MyInput.isPressed(MyInput.BUTTON_W))
+			playerBody.applyForceToCenter(0, 7, true);
+		
+		if(MyInput.isPressed(MyInput.BUTTON_S))
+			playerBody.applyForceToCenter(0, -7, true);
 	}
 
 	@Override
