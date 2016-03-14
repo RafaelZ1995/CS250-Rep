@@ -27,9 +27,7 @@ public class Game implements ApplicationListener {
 	
 	@Override
 	public void create() {
-		
-		
-		
+
 		// set spritebatch cam and hudcam
 		sb = new SpriteBatch();
 		cam = new OrthographicCamera();
@@ -38,6 +36,7 @@ public class Game implements ApplicationListener {
 		hudcam.setToOrtho(false, V_WIDTH, V_HEIGHT);
 		
 		gsm = new GameStateManager(this);
+		Gdx.input.setInputProcessor(new MyInputProcessor()); // for controller 
 		
 	}
 
