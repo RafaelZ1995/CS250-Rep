@@ -1,4 +1,4 @@
-package core.game;
+package core.player;
 
 import static core.handlers.B2DVars.PPM;
 
@@ -90,6 +90,10 @@ public class Player {
 		
 		if(myinput.isDown(myinput.DOWN))
 			playerBody.applyForceToCenter(0, -7, true);
+	}
+	
+	public Body getPlayerBody(){
+		return playerBody;
 	}
 	
 }

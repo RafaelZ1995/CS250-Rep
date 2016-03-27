@@ -1,6 +1,7 @@
 package core.savesystem;
 
 import core.player.DummyPlayer;
+import core.player.Player;
 
 /**
  * @author Rafael Zuniga
@@ -27,7 +28,7 @@ public class SaveConfiguration {
 	// and so on
 	
 	// or it can just store the Player class reference
-	private DummyPlayer dplayer;
+	private Player player;
 
 	// public saveConfiguration(Player player)
 	public SaveConfiguration(int sector, int room){
@@ -38,12 +39,12 @@ public class SaveConfiguration {
 	public SaveConfiguration(int sector, int room, DummyPlayer dplayer){
 		this.sector = sector;
 		this.room = room;
-		this.dplayer = dplayer;
+		this.player = player;
 	}
 	
 	// GETTERS AND SETTERS
-	public DummyPlayer getdPlayer(){
-		return dplayer;
+	public Player getPlayer(){
+		return player;
 	}
 	
 	public int getSector() {
