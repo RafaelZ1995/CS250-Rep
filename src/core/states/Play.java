@@ -25,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import core.game.Game;
 import core.handlers.B2DVars;
 import core.handlers.GameStateManager;
+import core.handlers.MyInput;
 import core.handlers.PlayContactListener;
 
 public class Play extends GameState {
@@ -60,7 +61,7 @@ public class Play extends GameState {
 		// true, something so that gravity doesnt apply to objects
 		// not in screen.. (tut part 2 min 4:00)
 		world = new World(new Vector2(0, -9.81f), true);
-		world.setContactListener(cl);
+		//world.setContactListener(cl);
 		b2dr = new Box2DDebugRenderer();
 
 		
@@ -204,19 +205,19 @@ public class Play extends GameState {
 		// if(Gdx.input.isKeyPressed(Keys.RIGHT))
 		// 	playerBody.applyForceToCenter(7, 0, true);
 		
-		if(MyInput.isPressed(MyInput.BUTTON_SPACEBAR) && cl.isPlayerOnGround())
+		if(MyInput.isPressed(MyInput.JUMP) && cl.isPlayerOnGround())
 			playerBody.applyForceToCenter(0, 40, true);
 		
-		if(MyInput.isPressed(MyInput.BUTTON_A))
+		if(MyInput.isPressed(MyInput.LEFT))
 			playerBody.applyForceToCenter(-7, 0, true);
 		
-		if(MyInput.isPressed(MyInput.BUTTON_D))
+		if(MyInput.isPressed(MyInput.RIGHT))
 			playerBody.applyForceToCenter(7, 0, true);
 		
-		if(MyInput.isPressed(MyInput.BUTTON_W))
+		if(MyInput.isPressed(MyInput.UP))
 			playerBody.applyForceToCenter(0, 7, true);
 		
-		if(MyInput.isPressed(MyInput.BUTTON_S))
+		if(MyInput.isPressed(MyInput.DOWN))
 			playerBody.applyForceToCenter(0, -7, true);
 	}
 

@@ -144,7 +144,7 @@ public class Room {
 
 	public void render() {
 		// render whole tmx file
-		Body tempPlayer = PlayState.dplayer.getPlayerBody();
+		Body tempPlayer = PlayState.player.getPlayerBody();
 		
 		// set camera to follow player
 		gsm.getGame().getCam().position.set(tempPlayer.getPosition().x*100, 
@@ -152,7 +152,7 @@ public class Room {
 				0);
 		gsm.getGame().getCam().update();
 		
-		b2dcam.position.set(PlayState.dplayer.getPlayerBody().getPosition().x , (float) tempPlayer.getPosition().y,  0);
+		b2dcam.position.set(PlayState.player.getPlayerBody().getPosition().x , (float) tempPlayer.getPosition().y,  0);
 		b2dcam.update();
 		
 		tmr.setView(gsm.getGame().getCam());
@@ -176,7 +176,7 @@ public class Room {
 		Array<Body> toDispose = new Array<Body>();
 		world.getBodies(toDispose);
 		for (Body body: toDispose){
-			if (body.equals(PlayState.dplayer.getPlayerBody())){
+			if (body.equals(PlayState.player.getPlayerBody())){
 				System.out.println("did not delete player");
 				continue;
 			}
