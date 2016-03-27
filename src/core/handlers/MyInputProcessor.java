@@ -5,36 +5,35 @@ import com.badlogic.gdx.Input.Keys;
 
 public class MyInputProcessor extends InputAdapter {
 	
-	private boolean left, right, up, down, jump;
-	
 	public boolean keyDown(int k) {
 		if(k == Keys.A) {
-			MyInput.setKey(MyInput.BUTTON_A, true);
+			MyInput.setKey(MyInput.LEFT, true);
 			left = true;
-			//System.out.println("A pressed " + left);
+			System.out.println("A pressed " + left);
 		}
+		
 		if(k == Keys.D) {
-			MyInput.setKey(MyInput.BUTTON_D, true);
+			MyInput.setKey(MyInput.RIGHT, true);
 			right = true;
-			//System.out.println("D pressed " + right);
+			System.out.println("D pressed " + right);
 		}
 		
 		if(k == Keys.W) {
-			MyInput.setKey(MyInput.BUTTON_W, true);
+			MyInput.setKey(MyInput.UP, true);
 			up = true;
-			//System.out.println("W pressed " + up);
+			System.out.println("W pressed " + up);
 		}
 		
 		if(k == Keys.S) {
-			MyInput.setKey(MyInput.BUTTON_S, true);
+			MyInput.setKey(MyInput.DOWN, true);
 			down = true;
-			//System.out.println("S pressed " + down);
+			System.out.println("S pressed " + down);
 		}
 		
 		if(k == Keys.SPACE) {
-			MyInput.setKey(MyInput.BUTTON_SPACEBAR, true);
+			MyInput.setKey(MyInput.JUMP, true);
 			jump = true;
-			//System.out.println("Spacebar pressed " + jump);
+			System.out.println("Spacebar pressed " + jump);
 		}
 		
 		return true;
@@ -42,55 +41,35 @@ public class MyInputProcessor extends InputAdapter {
 	
 	public boolean keyUp(int k) {
 		if(k == Keys.A) {
-			MyInput.setKey(MyInput.BUTTON_A, false);
+			MyInput.setKey(MyInput.LEFT, false);
 			left = false;
-			//System.out.println("A released " + left);
+			System.out.println("A released " + left);
 		}
 		if(k == Keys.D) {
-			MyInput.setKey(MyInput.BUTTON_D, false);
+			MyInput.setKey(MyInput.RIGHT, false);
 			right = false;
-			//System.out.println("D released " + right);
+			System.out.println("D released " + right);
 		}
 		
 		if(k == Keys.W) {
-			MyInput.setKey(MyInput.BUTTON_W, false);
+			MyInput.setKey(MyInput.UP, false);
 			up = false;
-			//System.out.println("W released " + up);
+			System.out.println("W released " + up);
 		}
 		
 		if(k == Keys.S) {
-			MyInput.setKey(MyInput.BUTTON_S, false);
+			MyInput.setKey(MyInput.DOWN, false);
 			down = false;
-			//System.out.println("S released " + down);
+			System.out.println("S released " + down);
 		}
 		
 		if(k == Keys.SPACE) {
-			MyInput.setKey(MyInput.BUTTON_SPACEBAR, false);
+			MyInput.setKey(MyInput.JUMP, false);
 			jump = false;
-			//System.out.println("Spacebar released " + jump);
+			System.out.println("Spacebar released " + jump);
 		}
 		
 		return true;
-	}
-	
-	public boolean getLeft() {
-		return left;
-	}
-
-	public boolean getRight() {
-		return right;
-	}
-
-	public boolean getUp() {
-		return up;
-	}
-
-	public boolean getDown() {
-		return down;
-	}
-
-	public boolean getJump() {
-		return jump;
 	}
 	
 }
