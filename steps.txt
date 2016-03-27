@@ -1,8 +1,8 @@
 get gdx-setup
 start new project
 name : doesnt matter
-name of Game class: Game
 package: core.game
+name of Game class: Game
 ...
 advanced: request your IDE files
 create project in X directory
