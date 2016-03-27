@@ -1,16 +1,20 @@
 package core.handlers;
 
+// created 3/14
+
 public class MyInput {
 	
 	public static boolean[] keys;
 	public static boolean[] pkeys;
 	
-	public static final int NUM_KEYS = 5;
-	public static final int BUTTON_A = 0;
-	public static final int BUTTON_D = 1;
-	public static final int BUTTON_W = 2;
-	public static final int BUTTON_S = 3;
-	public static final int BUTTON_SPACEBAR = 4;
+	public static final int NUM_KEYS = 6;
+	
+	public static final int LEFT = 0;
+	public static final int RIGHT = 1;
+	public static final int UP = 2;
+	public static final int DOWN = 3;
+	public static final int JUMP = 4;
+	public static final int SHOOT = 5; // for shooting
 	
 	static {
 		keys = new boolean[NUM_KEYS];
