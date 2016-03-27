@@ -1,3 +1,5 @@
-public abstract Enemy{
+package core.enemies;
+
+public abstract class Enemy{
 
 }
