@@ -36,14 +36,13 @@ public class PlayState extends GameState {
 		this.universe = Game.universe;
 		this.saveConf = saveConf;
 		
-		currentWorld = universe.getCurrentSector().getWorld();
 
 		// HERE, you would set the Sector stored in saveConf.
 		universe.setSector(saveConf.getSector());
-		
 		// pass this class object to universe
 		universe.setState(this);
 
+		currentWorld = universe.getCurrentSector().getWorld();
 		// get the player reference from the SaveConfiguration we are loading
 		player = saveConf.getPlayer();
 
@@ -53,8 +52,8 @@ public class PlayState extends GameState {
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
 		this.universe = Game.universe;
-		currentWorld = universe.getCurrentSector().getWorld();
 		universe.setSector(0);
+		currentWorld = universe.getCurrentSector().getWorld(); // set sector before this
 		player = new Player(currentWorld);
 	}
 
