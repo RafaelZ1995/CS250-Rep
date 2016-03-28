@@ -36,7 +36,7 @@ public class SaveConfiguration {
 		this.room = room;
 	}
 	
-	public SaveConfiguration(int sector, int room, DummyPlayer dplayer){
+	public SaveConfiguration(int sector, int room, Player player){
 		this.sector = sector;
 		this.room = room;
 		this.player = player;
