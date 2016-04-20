@@ -6,59 +6,90 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+import core.universe.Door;
+import core.universe.Sector;
 
+/*
+ * This class currently:
+ * 		Checks if the player was in contact with a door. If so, tell the current Sector that it should change room.
+ * 
+ */
 public class PlayContactListener implements ContactListener {
 
-	private boolean playerOnGround;
-	
+	private int featuresInContact;
+	private Sector sector;
+
+	// stores the last door we went into
+	private String doorUsed;
+
+	public PlayContactListener(Sector sector) {
+		this.sector = sector;
+	}
+
 	// Runs when two fixtures/objects collide
 	@Override
 	public void beginContact(Contact c) {
 		// Contact is a class that knows two fixtures/objects collide
 		Fixture fa = c.getFixtureA();
 		Fixture fb = c.getFixtureB();
-		//System.out.println(fa.getUserData() + ", " + fb.getUserData());
-		if (fa.getUserData().equals("foot") || fb.getUserData().equals("foot")) {
-			playerOnGround = true;
+
+		// either fixture might be null sometimes.
+		if (fa == null || fb == null)
+			return;
+		if (fa.getUserData() == null || fb.getUserData() == null)
+			return;
+
+		checkPlayerContactWithDoor(fa, fb);
+
+	}
+
+	private void checkPlayerContactWithDoor(Fixture fa, Fixture fb) {
+		if (fa.getUserData().equals("playerBody") || fb.getUserData().equals("playerBody")) {
+			if (fa.getUserData() instanceof Door || fb.getUserData() instanceof Door) {
+
+				if (fa.getUserData() instanceof Door) {
+					Door door = (Door) fa.getUserData();
+					// tell sector to change room
+					sector.setRoomToChangeTo(door.to());
+					// tell sector which door player should come out of
+					doorUsed = door.getDirection();
+				} else {
+					Door door = (Door) fb.getUserData();
+					sector.setRoomToChangeTo(door.to());
+					doorUsed = door.getDirection();
+				}
+			}
 		}
-		
-		/*
-		if (fa.getUserData().equals("ball") || fb.getUserData().equals("ball")) {
-			playerOnGround = true;
-		}
-		*/
+
 	}
 
 	@Override
 	public void endContact(Contact c) {
-		// TODO Auto-generated method stub
 		Fixture fa = c.getFixtureA();
 		Fixture fb = c.getFixtureB();
-		if (fa.getUserData().equals("foot") || fb.getUserData().equals("foot")) {
-			playerOnGround = false;
-		}
-		
-		/*
-		if (fa.getUserData().equals("ball") || fb.getUserData().equals("ball")) {
-			playerOnGround = false;
-		}
-		*/
+		if (fa == null || fb == null)
+			return;
+		if (fa.getUserData() == null || fb.getUserData() == null)
+			return;
 	}
 
-	public boolean isPlayerOnGround(){
-		return playerOnGround;
-	}
-	
 	@Override
 	public void postSolve(Contact c, ContactImpulse ci) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void preSolve(Contact c, Manifold m) {
-		// TODO Auto-generated method stub
 
+	}
+
+	// GETTERS
+	public boolean isPlayerOnGround() {
+		return featuresInContact > 0;
+	}
+
+	public String getDoorUsed() {
+		return doorUsed;
 	}
 
 }

@@ -3,6 +3,7 @@ package core.universe;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import core.game.Game;
 import core.handlers.GameStateManager;
 import core.states.GameState;
 import core.states.PlayState;
@@ -19,6 +20,10 @@ import core.states.PlayState;
  *         For performance, I think its good if we dispose() sector A, if player
  *         goes from Sector A to Sector B. Thus, every time player enters a
  *         sector, it must be loaded at that time. Any better ideas?
+ *         
+ *         Important:
+ *         Constructor Does NOT set the first sector, that is left for the PlayState class to do.
+ *         Universe no longer depends on gsm
  *
  */
 public class Universe {
@@ -27,22 +32,15 @@ public class Universe {
 	
 	private ArrayList<Sector> sectors = new ArrayList<Sector>();
 	
-	private GameStateManager gsm;
-	
-	private GameState playState;
+	private Game game;
 
 	/*
 	 * will probably take in a saveConfiguration object eventually. So that it knows
 	 * what the current sector and current room should be.
 	 */
-	public Universe(GameStateManager gsm) {
-		// temporary / set sector to start with.
-		currentSector = 0;
-		setSector(currentSector);
-		
-		this.gsm = gsm;
-		playState = null;
-
+	public Universe(Game game) {
+		currentSector = -1; // PlayState sets the sector
+		this.game = game;
 	}
 
 	public void update() {
@@ -55,8 +53,7 @@ public class Universe {
 		//sectors.get(currentSector).render();
 	}
 
-	public void dispose() {
-		
+	public void dispose() {	
 		sectorStack.peek().dispose();
 		// dispose previous sector?
 		//sectors.get(currentSector).dispose();
@@ -71,17 +68,13 @@ public class Universe {
 		//return sectors.get(currentSector);
 	}
 	
-	// Setters
-	public void setState(PlayState state){
-		playState = state;
-	}
 	
 	// Sector and World manager
 	private Stack<Sector> sectorStack = new Stack<Sector>();
 	
 	public void setSector(int id){
 		if (sectorStack.isEmpty()){
-			Sector temp = new Sector(id, TmxAssets.sectorTmxFiles.get(id), gsm);
+			Sector temp = new Sector(id, TmxAssets.sectorTmxFiles.get(id), game);
 			sectorStack.push(temp);
 			currentSector = id;
 		}
@@ -90,7 +83,7 @@ public class Universe {
 			toDispose.dispose();
 			
 			// set up next sector
-			Sector temp = new Sector(id, TmxAssets.sectorTmxFiles.get(id), gsm);
+			Sector temp = new Sector(id, TmxAssets.sectorTmxFiles.get(id), game);
 			sectorStack.push(temp);
 			currentSector = id;
 		}

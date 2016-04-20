@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import core.handlers.B2DVars;
 import core.handlers.MyInput;
 import core.handlers.MyInputProcessor;
+import core.handlers.PlayContactListener;
 
 //	// DASHING ABILITY 
 //	
@@ -39,7 +40,7 @@ public class Player {
 	private MyInput myinput;
 	
 	public Player(World world) {
-		
+		System.out.println("building player");	
 		//input = new MyInputProcessor();
 		myinput = new MyInput();
 		
@@ -52,9 +53,8 @@ public class Player {
 		// initialized once, so when we dispose them, how do we get them 
 		// back?
 		playerBody = world.createBody(bdef);
-		System.out.println("here again");
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(5 / PPM, 5 / PPM);
+		shape.setAsBox(5 / PPM, 20 / PPM);
 		FixtureDef fdef = new FixtureDef();
 		
 		fdef.shape = shape;
@@ -63,7 +63,7 @@ public class Player {
 
 		Fixture fixture = playerBody.createFixture(fdef);
 		fixture = playerBody.createFixture(fdef);
-		fixture.setUserData("box");
+		fixture.setUserData("playerBody");
 
 		// another fixture for playerBody
 		shape.setAsBox(2 / PPM, 2 / PPM, new Vector2(0, -7 / PPM), 0);

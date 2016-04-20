@@ -55,7 +55,7 @@ public class Play extends GameState {
 	
 		
 
-		cl = new PlayContactListener();
+		//cl = new PlayContactListener();
 
 		// Vector2(side gravity, normal gravity)
 		// true, something so that gravity doesnt apply to objects

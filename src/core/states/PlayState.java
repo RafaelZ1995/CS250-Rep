@@ -14,33 +14,34 @@ import core.universe.Universe;
 /**
  * @author Rafael
  *
- *         next: implement update/render methods in universe, Sectors, Rooms
+ * 
+ *         Important: PlayState depends on Universe. (we cannot be playing if we
+ *         don't load the maps right)
  */
 public class PlayState extends GameState {
 
 	// temp
 	public static Player player;
 
-	// probably going to need a class savestate that has a universe, player
-	// data...
 	private Universe universe;
-	
+
 	// get world from universe.sector
 	private World currentWorld;
 
 	private SaveConfiguration saveConf;
 
-	// PlayState constructor for when we load a save.
+	/*
+	 * PlayState constructor for when we load a save.
+	 */
 	public PlayState(GameStateManager gsm, SaveConfiguration saveConf) {
 		super(gsm);
 		this.universe = Game.universe;
 		this.saveConf = saveConf;
 		
-
 		// HERE, you would set the Sector stored in saveConf.
 		universe.setSector(saveConf.getSector());
 		// pass this class object to universe
-		universe.setState(this);
+		// universe.setState(this);
 
 		currentWorld = universe.getCurrentSector().getWorld();
 		// get the player reference from the SaveConfiguration we are loading
@@ -48,12 +49,20 @@ public class PlayState extends GameState {
 
 	}
 
-	// PlayState constructor for when we start a new game.s
+	/*
+	 * PlayState constructor for when we start a new game.
+	 */
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
 		this.universe = Game.universe;
+
+		// since new game, set sector to 0 because we dont have a
+		// saveconfiguration to load,
+		// or we could automatically make a saveConfiguration that starts at
+		// sector 0 and everything.. this is probably better
 		universe.setSector(0);
-		currentWorld = universe.getCurrentSector().getWorld(); // set sector before this
+		currentWorld = universe.getCurrentSector().getWorld(); // set sector
+																// before this
 		player = new Player(currentWorld);
 	}
 
@@ -64,18 +73,15 @@ public class PlayState extends GameState {
 
 	@Override
 	public void update(float dt) {
-		// TODO Auto-generated method stub
-		handleInput();
 		universe.update();
 		player.update();
-		//System.out.println(dplayer.getPlayerBody().getPosition());
+		// System.out.println(dplayer.getPlayerBody().getPosition());
 		// world step is done in Sector's update
 	}
 
 	@Override
 	public void render() {
-		// TODO Auto-generated method stub
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT); // already done in Game?
 		// System.out.println("playstate rendering");
 		universe.render();
 	}
