@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="15" tilewidth="32" tileheight="32" nextobjectid="5">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="15" tilewidth="32" tileheight="32" nextobjectid="16">
  <tileset firstgid="1" name="blocks" tilewidth="32" tileheight="32" tilecount="256" columns="16">
   <image source="blocks.png" width="512" height="512"/>
  </tileset>
@@ -20,6 +20,16 @@
   </object>
   <object id="4" x="255" y="96">
    <polyline points="0,0 -64,-2.5 -127.5,-3.5 -191.5,-1.5 -224.5,0"/>
+  </object>
+  <object id="6" name="rightDoor" x="348" y="352.25" width="4.25" height="61.5">
+   <properties>
+    <property name="to" value="1"/>
+   </properties>
+  </object>
+  <object id="13" name="leftDoor" x="32.375" y="32.25" width="4.25" height="61.5">
+   <properties>
+    <property name="to" value="2"/>
+   </properties>
   </object>
  </objectgroup>
 </map>

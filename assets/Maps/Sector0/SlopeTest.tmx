@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" nextobjectid="7">
+ <tileset firstgid="1" name="slopetest" tilewidth="32" tileheight="32" tilecount="1980" columns="60">
+  <image source="slopetest.png" width="1920" height="1080"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   eJwN02OjHgQAQOG32bZt26jZq9m2zZq9mm3jzrZVs23d2UbPh+cfnDMvRCAwnwUsZBGLWcJSlrGcFawkiFWsZg1rWcd6NrCRTWxmC1vZxnZ2sJNdXOcGN7nFbe5wl3vc5wEPecRjgnnCU57xnBe85BWvecNb3vGeD3zkE5+JFzIQiE8CEpKIxCQhKclITgpSkorUpCEt6UhPBjKSicxkISvZyE4OcpKL3FSjOjWoSS1qU4e61KM+DWhIIxrThKY0ozktaEkrWtOGtrSjPR3oSCc6M47xTGAik5jMFKYyjenMYCazmM0c5jKP+SxgIYtYzBKWsozlrGAlQaziOCc4ySlOc4aznOM8F7jIJS5zhatc4zo3uMktbnOHu9zjPg94yCMeE0y4UIFAeCIQkUhEJgpRiUZ0YhCTWMQmDnGJR3wSkJBEJCYJSUlGclKQklSkpgQlKUVpylCWcpSnAhWpRGWqUJXf+YNqVKcGNalFbepQl3rUpwENaURjBjCQQQxmCEMZxnBGMJJRjGYMY/mbfxjHeCYwkUlMZgpTmcZ0ZjCTWcxmJ7vYzR72so/9HOAghzjMEY5yjH/5j+Oc4CSnOM0ZznKO81zgIpe4zBU+8ZkvfOUb3/nBTwKhA4FfCEFIQhGaMIQlHOGJQEQiEZkoRCUa0YlBTGIRm1zkJg95yUd+ClCQQhSmCEUpRnF+5TdKUJJSlKYMZSlHeSpQkUpUpgpV6URnutCVbnSnBz3pRW/60Jd+9OdP/mIAAxnEYIYwlGEMZwQjGcVoxjCWIFaxmjWsZR3r2cBGNrGZLWxlG9vZwU52sZs97GUf+znAQQ5xmCMc5RiPCeYJT3nGc17wkle85g1vecd7PvCRT3zmC1/5xnd+8JNAGH0QgpCEIjSpSE0a0pKO9GQgI5nITBayko3s5CAnuchNHvKSj/wUoCCFKEwRilKM4jSiMU1oSjOa04KWtKI1bWhLO9rTgY50ojNd6Eo3utODnvSiN33oSz/6M4vZzGEu85jPAhayiMUsYSnLWM4KVhLEKlazhrWsYz0b2MgmNrOFrWzjMle4yjWuc4Ob3OI2d7jLPe7zgIc84jHBPOEpz3jOC17yite84S3veE+ssD4mDnGJR3wSkJBEJCYJSUlGclKQklSkJg1pSUd6MpCRTGQmC1nJRnb+B7iDPUo=
+  </data>
+ </layer>
+ <objectgroup name="collision">
+  <object id="4" x="0" y="394.667">
+   <polyline points="0,0 264.667,150 675.333,150 958.667,44 943.333,-18.6667"/>
+  </object>
+ </objectgroup>
+</map>
