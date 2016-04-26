@@ -6,7 +6,6 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import core.game.Game;
 import core.handlers.GameStateManager;
-import core.player.DummyPlayer;
 import core.player.Player;
 import core.savesystem.SaveConfiguration;
 import core.universe.Universe;
@@ -62,8 +61,9 @@ public class PlayState extends GameState {
 		// sector 0 and everything.. this is probably better
 		universe.setSector(0);
 		currentWorld = universe.getCurrentSector().getWorld(); // set sector
-																// before this
-		player = new Player(currentWorld);
+									// before this
+		player = new Player(currentWorld, gsm);
+		
 	}
 
 	@Override
@@ -94,4 +94,6 @@ public class PlayState extends GameState {
 		// attemps to dispose of prev sector which is disposed by sector manager
 		// in universe
 	}
+	
+	// Getters
 }
