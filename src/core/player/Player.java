@@ -75,7 +75,7 @@ public class Player {
 
 		Fixture fixture = playerBody.createFixture(fdef);
 		fixture = playerBody.createFixture(fdef);
-		fixture.setUserData("box");
+		fixture.setUserData("playerBody");
 
 		// another fixture for playerBody
 		shape.setAsBox(2 / PPM, 2 / PPM, new Vector2(0, -7 / PPM), 0);
