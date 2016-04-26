@@ -21,6 +21,7 @@ public class PlayContactListener implements ContactListener {
 
 	// stores the last door we went into
 	private String doorUsed;
+	private boolean playerOnGround;
 
 	public PlayContactListener(Sector sector) {
 		this.sector = sector;
@@ -36,8 +37,15 @@ public class PlayContactListener implements ContactListener {
 		// either fixture might be null sometimes.
 		if (fa == null || fb == null)
 			return;
-		if (fa.getUserData() == null || fb.getUserData() == null)
-			return;
+		if (fa.getUserData() == null || fb.getUserData() == null) 
+			return;		
+		System.out.println(fa.getUserData());
+		if (fa.getUserData() != null && fa.getUserData().equals("ground")) {
+			playerOnGround = true;
+		}
+		if(fb.getUserData() != null && fb.getUserData().equals("ground")) {
+			playerOnGround = true;
+		}
 
 		checkPlayerContactWithDoor(fa, fb);
 
@@ -69,8 +77,18 @@ public class PlayContactListener implements ContactListener {
 		Fixture fb = c.getFixtureB();
 		if (fa == null || fb == null)
 			return;
-		if (fa.getUserData() == null || fb.getUserData() == null)
+		if (fa.getUserData() == null || fb.getUserData() == null) {
 			return;
+		}
+		if (fa.getUserData() != null && fa.getUserData().equals("ground")) {
+			playerOnGround = false;
+			System.out.println(fa.getUserData());
+		}
+		
+		if(fb.getUserData() != null && fb.getUserData().equals("ground")) {
+			playerOnGround = false;
+			System.out.println(fb.getUserData());
+		}
 	}
 
 	@Override
@@ -85,7 +103,7 @@ public class PlayContactListener implements ContactListener {
 
 	// GETTERS
 	public boolean isPlayerOnGround() {
-		return featuresInContact > 0;
+		return playerOnGround;
 	}
 
 	public String getDoorUsed() {
