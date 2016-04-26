@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input.Keys;
 
 public class MyInputProcessor extends InputAdapter {
 	
+	boolean direction;
+	
 	public boolean keyDown(int k) {
 		if(k == Keys.A) {
 			MyInput.setKey(MyInput.LEFT, true);
@@ -24,6 +26,10 @@ public class MyInputProcessor extends InputAdapter {
 		
 		if(k == Keys.SPACE) {
 			MyInput.setKey(MyInput.JUMP, true);
+		}
+		
+		if(k == Keys.K) {
+			MyInput.setKey(MyInput.DASH, true);
 		}
 		
 		return true;
@@ -47,6 +53,10 @@ public class MyInputProcessor extends InputAdapter {
 		
 		if(k == Keys.SPACE) {
 			MyInput.setKey(MyInput.JUMP, false);
+		}
+		
+		if(k == Keys.K) {
+			MyInput.setKey(MyInput.DASH, false);
 		}
 		
 		return true;
