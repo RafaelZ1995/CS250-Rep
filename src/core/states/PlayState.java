@@ -1,99 +1,224 @@
-package core.states;
+package core.player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import static core.handlers.B2DVars.PPM;
+
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import core.game.Game;
+import core.handlers.B2DVars;
 import core.handlers.GameStateManager;
-import core.player.Player;
-import core.savesystem.SaveConfiguration;
-import core.universe.Universe;
+import core.handlers.MyInput;
+import core.handlers.PlayContactListener;
 
-/**
- * @author Rafael
- *
- * 
- *         Important: PlayState depends on Universe. (we cannot be playing if we
- *         don't load the maps right)
- */
-public class PlayState extends GameState {
+//	// player info
+//	private boolean isDead;
+//	private boolean isHit;
+//
+//	// player info
+//	private int maxHealth;
+//	private int currentHealth;
+//	private int damage;
 
-	// temp
-	public static Player player;
 
-	private Universe universe;
+public class Player {
 
-	// get world from universe.sector
-	private World currentWorld;
+	private Body playerBody;
+	private MyInput myinput;
+	private PlayContactListener cl;
+	private GameStateManager gsm;
 
-	private SaveConfiguration saveConf;
+	private String displayHealth;
+	BitmapFont myBitmap;
+	private final int health = 10;
+	private boolean isPlayerHit;
 
-	/*
-	 * PlayState constructor for when we load a save.
-	 */
-	public PlayState(GameStateManager gsm, SaveConfiguration saveConf) {
-		super(gsm);
-		this.universe = Game.universe;
-		this.saveConf = saveConf;
+	private long startTime;
+	private long elapsedTime;
+	private final double coolDownTime = 10;
+	private boolean dashAbility;
+	private boolean isFacingRight; // to check if player is facing left or right
+	private SpriteBatch batch;
+
+	public Player(World world, GameStateManager gsm) {
+
+		this.cl = Game.universe.getCurrentSector().getContactListener();
+		this.gsm = gsm;
+		myinput = new MyInput();
+
+		// create box player
+		BodyDef bdef = new BodyDef();
+		bdef.position.set(160 / PPM, 200 / PPM);
+		bdef.type = BodyType.DynamicBody;
+
+		// currently there is no world. because Sectors are only
+		// initialized once, so when we dispose them, how do we get them
+		// back?
+		playerBody = world.createBody(bdef);
+		System.out.println("here again");
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(5 / PPM, 5 / PPM);
+		FixtureDef fdef = new FixtureDef();
+
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVars.BIT_BOX;
+		fdef.filter.maskBits = B2DVars.BIT_GROUND | B2DVars.BIT_BALL;
+
+		Fixture fixture = playerBody.createFixture(fdef);
+		fixture = playerBody.createFixture(fdef);
+		fixture.setUserData("playerBody");
+
+		// another fixture for playerBody
+		shape.setAsBox(2 / PPM, 2 / PPM, new Vector2(0, -7 / PPM), 0);
+		fdef.filter.categoryBits = B2DVars.BIT_BOX;
+		fdef.filter.maskBits = B2DVars.BIT_GROUND;
+		fdef.isSensor = true; // setting it to be a "ghost fixture"
+		playerBody.createFixture(fdef).setUserData("foot");
+
+		startTime = (long) (TimeUtils.millis() - (coolDownTime * 1000)); // number of seconds since between now and Jan 1, 1970
+												// 2 seconds is subtracted or else there will be error when special is activated for first time
+		batch = gsm.getGame().getSb();
+
+	}
+
+	public void create() {
+
+		myBitmap = new BitmapFont();
+
+	}
+
+	public void update() {
+
+		updateCooldowns(); // start calculating time for special ability cooldown
+		updateHealth();
+
+		if(myinput.isDown(myinput.JUMP)) {
+			System.out.println(cl.isPlayerOnGround());
+			if(cl.isPlayerOnGround()) 
+				playerBody.setLinearVelocity(0, 4);
+		}
 		
-		// HERE, you would set the Sector stored in saveConf.
-		universe.setSector(saveConf.getSector());
-		// pass this class object to universe
-		// universe.setState(this);
+		if(myinput.isDown(myinput.LEFT)) {
+			playerBody.setLinearVelocity(-1, 0);
+			isFacingRight = false;
+		}
 
-		currentWorld = universe.getCurrentSector().getWorld();
-		// get the player reference from the SaveConfiguration we are loading
-		player = saveConf.getPlayer();
+		if(myinput.isDown(myinput.RIGHT)) {
+			playerBody.setLinearVelocity(1, 0);
+			isFacingRight = true;
+		}
+
+		if(myinput.isDown(myinput.UP)) {
+			if(cl.isPlayerOnGround())
+				playerBody.setLinearVelocity(0, 2);
+		}
+
+		if(myinput.isDown(myinput.DOWN))
+			playerBody.setLinearVelocity(0, -1);
+
+		if(myinput.isPressed(myinput.DASH)) {
+			dashAbility();
+		}
 
 	}
 
-	/*
-	 * PlayState constructor for when we start a new game.
-	 */
-	public PlayState(GameStateManager gsm) {
-		super(gsm);
-		this.universe = Game.universe;
+	public void updateHealth() {
+		int currentHealth = health;
+		displayHealth = "health: " + currentHealth; // display player health
 
-		// since new game, set sector to 0 because we dont have a
-		// saveconfiguration to load,
-		// or we could automatically make a saveConfiguration that starts at
-		// sector 0 and everything.. this is probably better
-		universe.setSector(0);
-		currentWorld = universe.getCurrentSector().getWorld(); // set sector
-									// before this
-		player = new Player(currentWorld, gsm);
-		
+		// if player is attached, decrease health and update health displayed on screen
+		if(isPlayerHit == true) {
+			currentHealth--;
+			displayHealth = "health: " + currentHealth;
+		}
+		if(currentHealth == 0) {
+			System.out.println("GAME OVER BITCH!!!");
+		}
 	}
 
-	@Override
-	public void handleInput() {
-		// TODO Auto-generated method stub
+	// cool-down for special ability
+	private void updateCooldowns() {
+
+		elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
+
 	}
 
-	@Override
-	public void update(float dt) {
-		universe.update();
-		player.update();
-		// System.out.println(dplayer.getPlayerBody().getPosition());
-		// world step is done in Sector's update
+	// if cool-down time is
+	public void dashAbility(){
+
+		if(elapsedTime >= coolDownTime) {
+			startTime = System.currentTimeMillis();
+			//System.out.println("Time elapsed in seconds = " + ((System.currentTimeMillis() - startTime) / 1000));
+			dashAbility = true;
+
+
+			// if character is facing right, activating special ability will move character right, else left
+			if(isFacingRight == true)
+				playerBody.setLinearVelocity(50, 0);
+			else
+				playerBody.setLinearVelocity(-50, 0);
+		} else
+			System.out.println((coolDownTime - elapsedTime) + " more seconds until attack recharges.");
+
 	}
 
-	@Override
+	public Body getPlayerBody() {
+		return playerBody;
+	}
+
+
 	public void render() {
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT); // already done in Game?
-		// System.out.println("playstate rendering");
-		universe.render();
+
+		batch.begin();
+		myBitmap.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		myBitmap.draw(batch, displayHealth, 25, 100);
+		batch.end();
+
 	}
 
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		System.out.println("disposing PLAYSTATE");
-		// universe.dispose(); do not dispose of universe. because that just
-		// attemps to dispose of prev sector which is disposed by sector manager
-		// in universe
-	}
-	
-	// Getters
 }
+
+////	public void attack() { };
+//
+//	public void hit() {
+//
+//		if(isHit = true)
+//			currentHealth--;
+//
+//		isHit = false;
+//
+//	}
+//
+//
+//	public void calculateDamage() {
+//		currentHealth = currentHealth - damage;
+//
+//		if(currentHealth <= 10) {
+//			// give player a warning
+//		}
+//
+//		if(maxHealth - currentHealth == 0) {
+//			// game over
+//		}
+//	}
+//
+//	public void update(float dt) {
+//
+//		// check if hit
+//		// check lives
+//		// turning
+//		// accelerating
+//		// deceleration
+//
+//		// collision detection
+//
+//	}
