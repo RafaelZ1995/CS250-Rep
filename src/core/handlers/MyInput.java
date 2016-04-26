@@ -14,7 +14,7 @@ public class MyInput {
 	public static final int UP = 2;
 	public static final int DOWN = 3;
 	public static final int JUMP = 4;
-	public static final int SHOOT = 5; // for shooting
+	public static final int DASH = 5; // for special attack 
 	
 	static {
 		keys = new boolean[NUM_KEYS];
