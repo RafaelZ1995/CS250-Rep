@@ -2,15 +2,12 @@ package core.game;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import core.handlers.GameStateManager;
-import core.handlers.MyInput;
+import core.handlers.MusicHandler;
 import core.handlers.MyInputProcessor;
-import core.handlers.PlayContactListener;
 import core.handlers.Resources;
 import core.savesystem.SaveConfigurationHandler;
 import core.universe.TmxAssets;
@@ -53,17 +50,13 @@ public class Game implements ApplicationListener {
 	// textures, sprites, ...
 	public static Resources res;
 	
-	// for sound
-	Music music; 
-	com.badlogic.gdx.audio.Sound sound;
-	MyInput myInput;
+	private MusicHandler musicHandler;
 	
 
 	@Override
 	public void create() {
 
 		res = new Resources(); // load textures, sprites
-		
 		// set spritebatch cam and hudcam
 		sb = new SpriteBatch();
 		cam = new OrthographicCamera();
@@ -83,15 +76,10 @@ public class Game implements ApplicationListener {
 		gsm = new GameStateManager(this); // constructor does not set state
 		gsm.setState(GameStateManager.PLAYSTATE); // PlayState requires Universe // Start Game by setting the Menu state
 		
-		// play music and sound
-		music = Gdx.audio.newMusic(Gdx.files.internal("Sound/Dreams of Above - Maze Master.mp3"));
-		sound = Gdx.audio.newSound(Gdx.files.internal("Sound/Jumping.mp3"));
-		
-		music.setLooping(true); // music will loop
-		music.setVolume(0.5f); // make music 1/2 as loud 
-		//sound.setVolume(1, 0.25);
-		music.play();
-		
+		// music handler
+		musicHandler = new MusicHandler(gsm);
+		musicHandler.create();
+
 	}
 
 	/*
@@ -100,10 +88,8 @@ public class Game implements ApplicationListener {
 	@Override
 	public void dispose() {
 		
-		sb.dispose();
-		music.dispose();
-		sound.dispose();
-		
+		musicHandler.dispose();
+
 	}
 
 	@Override
@@ -125,11 +111,7 @@ public class Game implements ApplicationListener {
 		gsm.update(STEP);
 		gsm.render();
 		// }
-		
-		// play sound is W or SPACEBAR is pressed 
-		if(myInput.isPressed(4) == true && cl.isPlayerOnGround() == true) {
-			sound.play(0.25f);
-		}
+		musicHandler.render();
 		
 	}
 
