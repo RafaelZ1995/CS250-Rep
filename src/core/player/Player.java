@@ -44,10 +44,13 @@ public class Player {
 
 	private long startTime;
 	private long elapsedTime;
-	private final double coolDownTime = 10;
+	private final double coolDownTime = 2;
 	private boolean dashAbility;
 	private boolean isFacingRight; // to check if player is facing left or right
 	private SpriteBatch batch;
+	
+	// speed
+	private final float SPEED = 2;
 
 	public Player(World world, GameStateManager gsm) {
 
@@ -107,12 +110,12 @@ public class Player {
 		}
 		
 		if(myinput.isDown(myinput.LEFT)) {
-			playerBody.setLinearVelocity(-1, 0);
+			playerBody.setLinearVelocity(-SPEED, 0);
 			isFacingRight = false;
 		}
 
 		if(myinput.isDown(myinput.RIGHT)) {
-			playerBody.setLinearVelocity(1, 0);
+			playerBody.setLinearVelocity(SPEED, 0);
 			isFacingRight = true;
 		}
 
@@ -162,9 +165,9 @@ public class Player {
 
 			// if character is facing right, activating special ability will move character right, else left
 			if(isFacingRight == true)
-				playerBody.setLinearVelocity(50, 0);
+				playerBody.setLinearVelocity(5, 0);
 			else
-				playerBody.setLinearVelocity(-50, 0);
+				playerBody.setLinearVelocity(-5, 0);
 		} else
 			System.out.println((coolDownTime - elapsedTime) + " more seconds until attack recharges.");
 

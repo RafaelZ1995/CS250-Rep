@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import core.handlers.GameStateManager;
 import core.handlers.MyInputProcessor;
+import core.handlers.Resources;
 import core.savesystem.SaveConfigurationHandler;
 import core.universe.TmxAssets;
 import core.universe.Universe;
@@ -45,10 +46,15 @@ public class Game implements ApplicationListener {
 	public static Universe universe;
 
 	private int currentRoom = 0; // Nof
+	
+	// textures, sprites, ...
+	public static Resources res;
 
 	@Override
 	public void create() {
 
+		res = new Resources(); // load textures, sprites
+		
 		// set spritebatch cam and hudcam
 		sb = new SpriteBatch();
 		cam = new OrthographicCamera();
@@ -83,27 +89,7 @@ public class Game implements ApplicationListener {
 
 	public void update(float dt) {
 
-		// test going between sector
-		if (Gdx.input.isKeyJustPressed(Keys.E)) {
-			System.out.println("E");
-			if (universe.currentSector == 0)
-				universe.setSector(1);
-			else if (universe.currentSector == 1)
-				universe.setSector(0);
-		}
-
-		// switch rooms in current sector
-		if (Gdx.input.isKeyJustPressed(Keys.R)) {
-
-			if (currentRoom >= universe.getCurrentSector().getNumRooms() - 1)
-				currentRoom = 0;
-			else
-				currentRoom += 1;
-			universe.getCurrentSector().setRoom(currentRoom);
-			System.out.println("setting to room #: " + currentRoom);
-		}
-		// System.out.println("rendering room " +
-		// universe.getCurrentSector().getCurrentRoomN());
+	
 	}
 
 	// game loop method

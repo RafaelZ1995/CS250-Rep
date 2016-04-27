@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import core.game.Game;
 import core.handlers.GameStateManager;
+import core.hud.Hud;
 import core.player.Player;
 import core.savesystem.SaveConfiguration;
 import core.universe.Universe;
@@ -28,6 +29,9 @@ public class PlayState extends GameState {
 	private World currentWorld;
 
 	private SaveConfiguration saveConf;
+	
+	private Hud hud;
+
 
 	/*
 	 * PlayState constructor for when we load a save.
@@ -36,6 +40,7 @@ public class PlayState extends GameState {
 		super(gsm);
 		this.universe = Game.universe;
 		this.saveConf = saveConf;
+		hud = new Hud(gsm);
 		
 		// HERE, you would set the Sector stored in saveConf.
 		universe.setSector(saveConf.getSector());
@@ -54,7 +59,7 @@ public class PlayState extends GameState {
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
 		this.universe = Game.universe;
-
+		hud = new Hud(gsm);
 		// since new game, set sector to 0 because we dont have a
 		// saveconfiguration to load,
 		// or we could automatically make a saveConfiguration that starts at
@@ -84,6 +89,7 @@ public class PlayState extends GameState {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT); // already done in Game?
 		// System.out.println("playstate rendering");
 		universe.render();
+		hud.render();
 	}
 
 	@Override

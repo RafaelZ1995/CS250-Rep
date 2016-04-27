@@ -29,10 +29,10 @@ public class TmxAssets {
 	public TmxAssets() {
 
 		// load every Tmx file from our assets/Maps/Sector0 folder.
-		sector0TmxFiles.add(new TmxMapLoader().load("Maps/Sector0/Room0.tmx"));
-		sector0TmxFiles.add(new TmxMapLoader().load("Maps/Sector0/Room1.tmx"));
-		sector0TmxFiles.add(new TmxMapLoader().load("Maps/Sector0/Room2.tmx"));
-
+		sector0TmxFiles.add(new TmxMapLoader().load("Maps/Sector0/Rooms/r0.tmx")); // id 0
+		sector0TmxFiles.add(new TmxMapLoader().load("Maps/Sector0/Rooms/r1.tmx")); // id 1
+		sector0TmxFiles.add(new TmxMapLoader().load("Maps/Sector0/Rooms/r2.tmx")); // id 2?
+		sector0TmxFiles.add(new TmxMapLoader().load("Maps/Sector0/Rooms/r3.tmx"));
 		// load every Tmx file from our assets/Maps/Sector1 folder.
 		sector1TmxFiles.add(new TmxMapLoader().load("Maps/Sector1/test1.tmx"));
 
