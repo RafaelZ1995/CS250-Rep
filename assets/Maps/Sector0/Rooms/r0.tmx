@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="13" tilewidth="32" tileheight="32" nextobjectid="5">
+ <tileset firstgid="1" name="purpleland" tilewidth="32" tileheight="32" tilecount="240" columns="20">
+  <image source="../Tiles/purpleland.png" width="640" height="400"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="20" height="13">
+  <data encoding="base64" compression="zlib">
+   eJytw4N2EAAAAMBl21xt2baWVqtl27at1VpLy7Zt27Zt8xO6j+jeu4CA/yuWsY1jXOMZ3wQmNJGJTWJSk5ncFKY0lalNY1rTmd4MZjSTmc1iVrOZ3UBzmNMgg81lbvOY13zmt4AFLWRhi1jUYha3hCUtZWnLWNZylreCFa1kZatY1WqGWN0a1rSWtQ21jnUNs571DbeBDW1kY5vY1GY2t4UtbWVr29jWdra3gx3tZGe72NVudreHPe1lb/vY1372d4ADHeRghzjUYQ53hCMd5WjHONZxjneCE53kZKcY4VSnGel0o5xhtDOd5WznONcY5znfBS50kYtd4lKXudwVrnSVq13jWte53g1udJOb3eJWt7ndHe50l7vd4173ud8DHvSQhz3iUY953BOe9JSnPeNZz3neC170kpe94lWved0b3vSWt73jXe953wc+9JGPfeJTn/ncF770la9941vf+d4PfvSTn/3iV7/53R/+9Je//eNf/wFvonD5
+  </data>
+ </layer>
+ <objectgroup name="collision">
+  <object id="1" x="640" y="291">
+   <polyline points="0,0 -59,-1 -96,-9 -116,-8 -143,1 -168,8 -206,5 -232,-11 -251,-33 -280,-57 -305,-76 -321,-82 -341,-83 -365,-80 -384,-74 -405,-62 -425,-52 -450,-43 -469,-36 -504,-33 -520,-31 -545,-29 -545,-291 -1,-291 0,9"/>
+  </object>
+  <object id="4" name="rightDoor" x="632.875" y="227.25" width="4.25" height="61.5">
+   <properties>
+    <property name="to" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
