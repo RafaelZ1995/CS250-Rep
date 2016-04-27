@@ -117,13 +117,14 @@ public class Room {
 	private void parsePolyLines(MapObjects objects) {
 
 		for (MapObject object : objects) {
-			Shape shape;
+			Shape chainShape;
 
 			// parse poly lines
 			if (object instanceof PolylineMapObject)
-				shape = createPolyline((PolylineMapObject) object);
+				chainShape = createPolyline((PolylineMapObject) object);
 			// parse doors
 			else if (object instanceof RectangleMapObject) {
+					
 				RectangleMapObject doorRect = (RectangleMapObject) object;
 				Door door = new Door(world, doorRect);
 				System.out.println("doorRectName: " + doorRect.getName());
@@ -132,15 +133,22 @@ public class Room {
 			} else
 				continue;
 
-			// polylines
+			// polylines Body
 			Body body;
 			BodyDef bdef = new BodyDef();
 			bdef.type = BodyDef.BodyType.StaticBody;
-			// System.out.println("parsing pt1 world: " + world);
 			body = world.createBody(bdef);
-			// System.out.println("parsing pt2");
-			body.createFixture(shape, 1.0f).setUserData("ground");
-			shape.dispose();
+
+			// Fixture definition
+			FixtureDef fdef = new FixtureDef();
+			fdef.filter.categoryBits = B2DVars.BIT_GROUND;
+			fdef.filter.maskBits = B2DVars.BIT_BOX;
+			fdef.shape = chainShape;
+			
+			// Fixture
+			Fixture fixture = body.createFixture(fdef);
+			fixture.setUserData("ground");
+			chainShape.dispose();
 		}
 	}
 
@@ -153,29 +161,14 @@ public class Room {
 
 		ChainShape cs = new ChainShape();
 		cs.createChain(worldVertices);
+		
 		return cs;
 	}
 
-	private void createSquare(int row, int col) {
-		BodyDef bdef = new BodyDef();
-		bdef.position.set((col + 0.5f) * 32 / PPM, (row + 0.5f) * 32 / PPM);
-		bdef.type = BodyType.StaticBody;
-		Body body = world.createBody(bdef);
-
-		// fixtures, actually make the body
-		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(16 / PPM, 16 / PPM);
-		FixtureDef fdef = new FixtureDef();
-		fdef.shape = shape;
-		fdef.filter.categoryBits = B2DVars.BIT_GROUND;
-		fdef.filter.maskBits = B2DVars.BIT_BOX;
-		Fixture fixture = body.createFixture(fdef);
-		fixture.setUserData("ground");
-	}
 
 	public void render() {
 
-		// render whole tmx file
+		// statically get player
 		Body tempPlayer = PlayState.player.getPlayerBody();
 
 		// set camera to follow player
@@ -193,7 +186,7 @@ public class Room {
 		b2dr.render(world, b2dcam.combined);
 
 	}
-
+	
 	public void update() {
 		// enemies.update
 		// moving platforms...

@@ -29,7 +29,6 @@ import core.handlers.PlayContactListener;
 //	private int currentHealth;
 //	private int damage;
 
-
 public class Player {
 
 	private Body playerBody;
@@ -42,109 +41,125 @@ public class Player {
 	private final int health = 10;
 	private boolean isPlayerHit;
 
-	private long startTime;
-	private long elapsedTime;
-	private final double coolDownTime = 2;
-	private boolean dashAbility;
+	private long startTime; // for dashing
+	private long elapsedTime; // for dashing
+	private final double coolDownTime = 2; // dash Cool down
+	private boolean dashing;
 	private boolean isFacingRight; // to check if player is facing left or right
 	private SpriteBatch batch;
-	
-	// speed
-	private final float SPEED = 2;
+
+	private World world;
+
+	// Motion
+	private final float ACC = (float) 0.4; // acceleration
+	private final float DACC = (float) 0.2; // deacceleration
+	private final float MAX_SPEED = (float) 2.3;
+	private float speed;
 
 	public Player(World world, GameStateManager gsm) {
 
 		this.cl = Game.universe.getCurrentSector().getContactListener();
 		this.gsm = gsm;
+		this.world = world;
 		myinput = new MyInput();
 
 		// create box player
 		BodyDef bdef = new BodyDef();
 		bdef.position.set(160 / PPM, 200 / PPM);
 		bdef.type = BodyType.DynamicBody;
-
-		// currently there is no world. because Sectors are only
-		// initialized once, so when we dispose them, how do we get them
-		// back?
+		
 		playerBody = world.createBody(bdef);
-		System.out.println("here again");
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(5 / PPM, 5 / PPM);
 		FixtureDef fdef = new FixtureDef();
 
 		fdef.shape = shape;
 		fdef.filter.categoryBits = B2DVars.BIT_BOX;
-		fdef.filter.maskBits = B2DVars.BIT_GROUND | B2DVars.BIT_BALL;
+		fdef.filter.maskBits = B2DVars.BIT_GROUND;
+
+		// so that player slides down a wall velocity is towards the wall
+		fdef.friction = (float) 0;
 
 		Fixture fixture = playerBody.createFixture(fdef);
-		fixture = playerBody.createFixture(fdef);
 		fixture.setUserData("playerBody");
 
-		// another fixture for playerBody
+		// foot sensor fixture to detect ground.
 		shape.setAsBox(2 / PPM, 2 / PPM, new Vector2(0, -7 / PPM), 0);
-		fdef.filter.categoryBits = B2DVars.BIT_BOX;
-		fdef.filter.maskBits = B2DVars.BIT_GROUND;
 		fdef.isSensor = true; // setting it to be a "ghost fixture"
-		playerBody.createFixture(fdef).setUserData("foot");
+		fixture = playerBody.createFixture(fdef);
+		fixture.setUserData("foot");
 
-		startTime = (long) (TimeUtils.millis() - (coolDownTime * 1000)); // number of seconds since between now and Jan 1, 1970
-												// 2 seconds is subtracted or else there will be error when special is activated for first time
+		startTime = (long) (TimeUtils.millis() - (coolDownTime * 1000));
+		// 2 seconds is subtracted or else there will be error when special is
+		// activated for first time
 		batch = gsm.getGame().getSb();
 
-	}
-
-	public void create() {
-
 		myBitmap = new BitmapFont();
-
 	}
 
 	public void update() {
 
-		updateCooldowns(); // start calculating time for special ability cooldown
+		// calculate cooldowns for special abilities
+		updateCooldowns();
 		updateHealth();
 
-		if(myinput.isDown(myinput.JUMP)) {
-			if(cl.isPlayerOnGround()) 
-				playerBody.setLinearVelocity(0, 4);
-		}
-		
-		if(myinput.isDown(myinput.LEFT)) {
-			playerBody.setLinearVelocity(-SPEED, 0);
-			isFacingRight = false;
-		}
+		// eventually we would want a boolean to check if we are using any
+		// ability at all
+		if (!dashing)
+			calculateNormalMovement(); // checks jump, left, right
 
-		if(myinput.isDown(myinput.RIGHT)) {
-			playerBody.setLinearVelocity(SPEED, 0);
-			isFacingRight = true;
-		}
+		calculateAbilities(); // checks dash
 
-		if(myinput.isDown(myinput.UP)) {
-			if(cl.isPlayerOnGround())
-				playerBody.setLinearVelocity(0, 2);
-		}
-
-		if(myinput.isDown(myinput.DOWN))
-			playerBody.setLinearVelocity(0, -1);
-
-		if(myinput.isPressed(myinput.DASH)) {
-			dashAbility();
-		}
+		// finally update position here
+		float linearY = playerBody.getLinearVelocity().y; 
+		// get the linear Velocity y, and use it for setLinearVelocity
+		playerBody.setLinearVelocity(speed, linearY);
+		// that way we are not changing it to 0.
 
 	}
 
-	public void updateHealth() {
-		int currentHealth = health;
-		displayHealth = "health: " + currentHealth; // display player health
+	private void calculateAbilities() {
+		if (myinput.isDown(myinput.DASH)) {
+			dashing = true;
+			dashAbility();
+		} else {
+			// we can wait for cd to be over to put this back to false.
+			dashing = false;
+		}
+	}
 
-		// if player is attached, decrease health and update health displayed on screen
-		if(isPlayerHit == true) {
-			currentHealth--;
-			displayHealth = "health: " + currentHealth;
+	private void calculateNormalMovement() {
+		if (myinput.isPressed(myinput.JUMP) && cl.isPlayerOnGround()) {
+			playerBody.applyForceToCenter(0, 140, true);
 		}
-		if(currentHealth == 0) {
-			System.out.println("GAME OVER BITCH!!!");
+
+		if (myinput.isPressed(myinput.LEFT)) {
+			isFacingRight = false;
+			if (speed < -MAX_SPEED)
+				speed = -MAX_SPEED;
+			else
+				speed -= ACC;
+		} else if (myinput.isPressed(myinput.RIGHT)) {
+			isFacingRight = true;
+
+			if (speed > MAX_SPEED)
+				speed = MAX_SPEED;
+			else
+				speed += ACC;
+		} else { // decelerate
+
+			if (isFacingRight) {
+				speed -= DACC;
+				if (speed < 0)
+					speed = 0;
+			} else {
+				speed += DACC;
+				if (speed > 0)
+					speed = 0;
+			}
+
 		}
+
 	}
 
 	// cool-down for special ability
@@ -154,20 +169,36 @@ public class Player {
 
 	}
 
+	public void updateHealth() {
+		int currentHealth = health;
+		displayHealth = "health: " + currentHealth; // display player health
+
+		// if player is attached, decrease health and update health displayed on
+		// screen
+		if (isPlayerHit == true) {
+			currentHealth--;
+			displayHealth = "health: " + currentHealth;
+		}
+		if (currentHealth == 0) {
+			System.out.println("GAME OVER BITCH!!!");
+		}
+	}
+
 	// if cool-down time is
-	public void dashAbility(){
+	public void dashAbility() {
 
-		if(elapsedTime >= coolDownTime) {
+		if (elapsedTime >= coolDownTime) {
 			startTime = System.currentTimeMillis();
-			//System.out.println("Time elapsed in seconds = " + ((System.currentTimeMillis() - startTime) / 1000));
-			dashAbility = true;
+			// System.out.println("Time elapsed in seconds = " +
+			// ((System.currentTimeMillis() - startTime) / 1000));
 
-
-			// if character is facing right, activating special ability will move character right, else left
-			if(isFacingRight == true)
-				playerBody.setLinearVelocity(5, 0);
-			else
-				playerBody.setLinearVelocity(-5, 0);
+			// if character is facing right, activating special ability will
+			// move character right, else left
+			if (isFacingRight == true) {
+				speed = 5;
+			} else {
+				speed = -5;
+			}
 		} else
 			System.out.println((coolDownTime - elapsedTime) + " more seconds until attack recharges.");
 
@@ -176,7 +207,6 @@ public class Player {
 	public Body getPlayerBody() {
 		return playerBody;
 	}
-
 
 	public void render() {
 
@@ -189,38 +219,38 @@ public class Player {
 
 }
 
-////	public void attack() { };
+//// public void attack() { };
 //
-//	public void hit() {
+// public void hit() {
 //
-//		if(isHit = true)
-//			currentHealth--;
+// if(isHit = true)
+// currentHealth--;
 //
-//		isHit = false;
+// isHit = false;
 //
-//	}
+// }
 //
 //
-//	public void calculateDamage() {
-//		currentHealth = currentHealth - damage;
+// public void calculateDamage() {
+// currentHealth = currentHealth - damage;
 //
-//		if(currentHealth <= 10) {
-//			// give player a warning
-//		}
+// if(currentHealth <= 10) {
+// // give player a warning
+// }
 //
-//		if(maxHealth - currentHealth == 0) {
-//			// game over
-//		}
-//	}
+// if(maxHealth - currentHealth == 0) {
+// // game over
+// }
+// }
 //
-//	public void update(float dt) {
+// public void update(float dt) {
 //
-//		// check if hit
-//		// check lives
-//		// turning
-//		// accelerating
-//		// deceleration
+// // check if hit
+// // check lives
+// // turning
+// // accelerating
+// // deceleration
 //
-//		// collision detection
+// // collision detection
 //
-//	}
+// }

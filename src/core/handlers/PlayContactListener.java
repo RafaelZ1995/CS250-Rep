@@ -21,7 +21,6 @@ public class PlayContactListener implements ContactListener {
 
 	// stores the last door we went into
 	private String doorUsed;
-	private boolean playerOnGround;
 
 	public PlayContactListener(Sector sector) {
 		this.sector = sector;
@@ -37,18 +36,34 @@ public class PlayContactListener implements ContactListener {
 		// either fixture might be null sometimes.
 		if (fa == null || fb == null)
 			return;
-		if (fa.getUserData() == null || fb.getUserData() == null) 
-			return;		
-		System.out.println(fa.getUserData());
-		if (fa.getUserData() != null && fa.getUserData().equals("ground")) {
-			playerOnGround = true;
-		}
-		if(fb.getUserData() != null && fb.getUserData().equals("ground")) {
-			playerOnGround = true;
-		}
+		if (fa.getUserData() == null || fb.getUserData() == null)
+			return;
 
+		checkPlayerOnGround(fa, fb);
 		checkPlayerContactWithDoor(fa, fb);
 
+	}
+
+	private void checkPlayerOnGround(Fixture fa, Fixture fb) {
+		//System.out.println("fa: " + fa.getUserData() + "  fb: " + fb.getUserData());
+		if (fa.getUserData().equals("foot")) {
+			featuresInContact++;
+		}
+		if(fb.getUserData().equals("foot")) {
+			featuresInContact++;
+		}
+		
+	}
+	
+	private void checkPlayerLeavingGround(Fixture fa, Fixture fb) {
+		if (fa.getUserData().equals("foot")) {
+			featuresInContact--;
+			
+		}
+		if(fb.getUserData().equals("foot")) {
+			featuresInContact--;
+		}
+		
 	}
 
 	private void checkPlayerContactWithDoor(Fixture fa, Fixture fb) {
@@ -77,18 +92,10 @@ public class PlayContactListener implements ContactListener {
 		Fixture fb = c.getFixtureB();
 		if (fa == null || fb == null)
 			return;
-		if (fa.getUserData() == null || fb.getUserData() == null) {
+		if (fa.getUserData() == null || fb.getUserData() == null)
 			return;
-		}
-		if (fa.getUserData() != null && fa.getUserData().equals("ground")) {
-			playerOnGround = false;
-			System.out.println(fa.getUserData());
-		}
 		
-		if(fb.getUserData() != null && fb.getUserData().equals("ground")) {
-			playerOnGround = false;
-			System.out.println(fb.getUserData());
-		}
+		checkPlayerLeavingGround(fa, fb);
 	}
 
 	@Override
@@ -103,7 +110,7 @@ public class PlayContactListener implements ContactListener {
 
 	// GETTERS
 	public boolean isPlayerOnGround() {
-		return playerOnGround;
+		return featuresInContact > 0;
 	}
 
 	public String getDoorUsed() {
