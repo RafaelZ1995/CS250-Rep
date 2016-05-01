@@ -20,15 +20,6 @@ import core.handlers.GameStateManager;
 import core.handlers.MyInput;
 import core.handlers.PlayContactListener;
 
-//	// player info
-//	private boolean isDead;
-//	private boolean isHit;
-//
-//	// player info
-//	private int maxHealth;
-//	private int currentHealth;
-//	private int damage;
-
 public class Player {
 
 	private Body playerBody;
@@ -37,8 +28,8 @@ public class Player {
 	private GameStateManager gsm;
 
 	private String displayHealth;
-	BitmapFont myBitmap;
-	private final int health = 10;
+	private BitmapFont myBitmap;
+	private final int TOTAL_HEALTH = 10;
 	private boolean isPlayerHit;
 
 	private long startTime; // for dashing
@@ -46,7 +37,6 @@ public class Player {
 	private final double coolDownTime = 2; // dash Cool down
 	private boolean dashing;
 	private boolean isFacingRight; // to check if player is facing left or right
-	private SpriteBatch batch;
 
 	private World world;
 
@@ -55,6 +45,13 @@ public class Player {
 	private final float DACC = (float) 0.2; // deacceleration
 	private final float MAX_SPEED = (float) 2.3;
 	private float speed;
+	
+	// Health
+	private boolean isDead;
+	private boolean isHit;
+	private int maxHealth;
+	private int currentHealth;
+	private int damage;
 
 	public Player(World world, GameStateManager gsm) {
 
@@ -92,9 +89,10 @@ public class Player {
 		startTime = (long) (TimeUtils.millis() - (coolDownTime * 1000));
 		// 2 seconds is subtracted or else there will be error when special is
 		// activated for first time
-		batch = gsm.getGame().getSb();
+		
+		// set health
+		currentHealth = TOTAL_HEALTH;
 
-		myBitmap = new BitmapFont();
 	}
 
 	public void update() {
@@ -169,19 +167,31 @@ public class Player {
 
 	}
 
-	public void updateHealth() {
-		int currentHealth = health;
-		displayHealth = "health: " + currentHealth; // display player health
-
-		// if player is attached, decrease health and update health displayed on
-		// screen
-		if (isPlayerHit == true) {
+	public int updateHealth() {
+		
+		currentHealth = 2;
+		// decrement health if player is attacked 
+		if (isPlayerHit == true) 
 			currentHealth--;
-			displayHealth = "health: " + currentHealth;
-		}
-		if (currentHealth == 0) {
-			System.out.println("GAME OVER BITCH!!!");
-		}
+		
+		 if(currentHealth == 0) {
+			 
+			 System.out.println("Game Over");
+			 
+		 }
+		 
+		return currentHealth;
+		
+	}
+	
+//	public boolean isPlayerHit() {
+//		
+//	}
+	
+	public int getCurrentHealth() {
+		
+		return currentHealth;
+		
 	}
 
 	// if cool-down time is
@@ -205,44 +215,17 @@ public class Player {
 	}
 
 	public Body getPlayerBody() {
+		
 		return playerBody;
+		
 	}
 
 	public void render() {
 
-		batch.begin();
-		myBitmap.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		myBitmap.draw(batch, displayHealth, 25, 100);
-		batch.end();
-
 	}
-
+	
 }
 
-//// public void attack() { };
-//
-// public void hit() {
-//
-// if(isHit = true)
-// currentHealth--;
-//
-// isHit = false;
-//
-// }
-//
-//
-// public void calculateDamage() {
-// currentHealth = currentHealth - damage;
-//
-// if(currentHealth <= 10) {
-// // give player a warning
-// }
-//
-// if(maxHealth - currentHealth == 0) {
-// // game over
-// }
-// }
-//
 // public void update(float dt) {
 //
 // // check if hit
