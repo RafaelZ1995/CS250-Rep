@@ -18,7 +18,7 @@ public class MusicHandler implements ApplicationListener{
 		
 		this.cl = Game.universe.getCurrentSector().getContactListener();
 		this.gsm = gsm;
-		
+		create();
 	}
 	
 	@Override
@@ -30,8 +30,6 @@ public class MusicHandler implements ApplicationListener{
 		music.setLooping(true); // music will loop
 		music.setVolume(0.5f);
 		music.play();
-		
-		System.out.println("music created");
 	}
 
 	@Override

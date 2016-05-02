@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import core.game.Game;
 import core.handlers.GameStateManager;
+import core.handlers.MusicHandler;
 import core.hud.Hud;
 import core.player.Player;
 import core.savesystem.SaveConfiguration;
@@ -29,9 +30,10 @@ public class PlayState extends GameState {
 	private World currentWorld;
 
 	private SaveConfiguration saveConf;
-	
-	private Hud hud;
 
+	private Hud hud;
+	
+	private MusicHandler musicHandler;
 
 	/*
 	 * PlayState constructor for when we load a save.
@@ -42,7 +44,7 @@ public class PlayState extends GameState {
 		this.saveConf = saveConf;
 		player = saveConf.getPlayer();
 		hud = new Hud(gsm);
-		
+
 		// HERE, you would set the Sector stored in saveConf.
 		universe.setSector(saveConf.getSector());
 		// pass this class object to universe
@@ -51,6 +53,8 @@ public class PlayState extends GameState {
 		currentWorld = universe.getCurrentSector().getWorld();
 		// get the player reference from the SaveConfiguration we are loading
 
+		// music handler
+		musicHandler = new MusicHandler(gsm);
 	}
 
 	/*
@@ -68,7 +72,9 @@ public class PlayState extends GameState {
 		// saveconfiguration to load,
 		// or we could automatically make a saveConfiguration that starts at
 		// sector 0 and everything.. this is probably better
-		
+
+		// music handler
+		musicHandler = new MusicHandler(gsm);
 	}
 
 	@Override
@@ -81,28 +87,27 @@ public class PlayState extends GameState {
 		universe.update();
 		player.update();
 		hud.update();
+		musicHandler.render();
 		// System.out.println(dplayer.getPlayerBody().getPosition());
 		// world step is done in Sector's update
 	}
 
 	@Override
 	public void render() {
-		
+
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT); // already done in Game?
 		// System.out.println("playstate rendering");
 		universe.render();
 		hud.render();
-		
+
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		System.out.println("disposing PLAYSTATE");
-		// universe.dispose(); do not dispose of universe. because that just
-		// attemps to dispose of prev sector which is disposed by sector manager
-		// in universe
+		musicHandler.dispose();
+		
 	}
-	
+
 	// Getters
 }

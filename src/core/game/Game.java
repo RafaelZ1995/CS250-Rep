@@ -56,7 +56,7 @@ public class Game implements ApplicationListener {
 	@Override
 	public void create() {
 
-		res = new Resources(); // load textures, sprites
+		
 		// set spritebatch cam and hudcam
 		sb = new SpriteBatch();
 		cam = new OrthographicCamera();
@@ -74,12 +74,9 @@ public class Game implements ApplicationListener {
 		
 		// Game state manager
 		gsm = new GameStateManager(this); // constructor does not set state
-		gsm.setState(GameStateManager.PLAYSTATE); // PlayState requires Universe // Start Game by setting the Menu state
+		gsm.setState(GameStateManager.MENUSTATE); // PlayState requires Universe // Start Game by setting the Menu state
 		
-		// music handler
-		musicHandler = new MusicHandler(gsm);
-		musicHandler.create();
-
+		res = new Resources(); // load textures, sprites
 	}
 
 	/*
@@ -88,7 +85,6 @@ public class Game implements ApplicationListener {
 	@Override
 	public void dispose() {
 		
-		musicHandler.dispose();
 
 	}
 
@@ -111,7 +107,6 @@ public class Game implements ApplicationListener {
 		gsm.update(STEP);
 		gsm.render();
 		// }
-		musicHandler.render();
 		
 	}
 

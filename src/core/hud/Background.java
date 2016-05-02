@@ -26,12 +26,10 @@ public class Background {
 	}
 	
 	public void render(){
-		Body player = PlayState.player.getPlayerBody();
-		bgCam.position.set(player.getPosition().x + Game.V_WIDTH, player.getPosition().y + Game.V_HEIGHT, 0);
-		bgCam.update();
-		sb.setProjectionMatrix(bgCam.combined);
+		
+		sb.setProjectionMatrix(gsm.getGame().getHudcam().combined);
 		sb.begin();
-		sb.draw(Game.res.getTexture("space"), 0, 0);
+		sb.draw(Game.res.getTexture("bg1"), 0, 0);
 		sb.end();
 	}
 

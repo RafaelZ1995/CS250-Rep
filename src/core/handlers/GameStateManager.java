@@ -4,24 +4,25 @@ import java.util.Stack;
 
 import core.game.Game;
 import core.states.GameState;
-import core.states.Play;
+import core.states.MenuState;
 import core.states.PlayState;
 
+/*
+ * Constructor Does NOT set the first state, that is left for the game class to do in create()
+ */
 public class GameStateManager {
 
 	private Game game;
 
 	private Stack<GameState> gamestates;
 
-	public static final int PLAY = 1234;
-
-	// actual playstate
+	// IDs of states
+	public static final int MENUSTATE = 1234;
 	public static final int PLAYSTATE = 1337;
 
 	public GameStateManager(Game game) {
 		this.game = game;
 		gamestates = new Stack<GameState>();
-		//pushState(PLAYSTATE); // set first state when initializing
 	}
 
 	public void update(float dt) {
@@ -60,13 +61,9 @@ public class GameStateManager {
 
 	// getState
 	private GameState getState(int state) {
-		if (state == PLAY) {
-			return new Play(this);
+		if (state == MENUSTATE) {
+			return new MenuState(this);
 		} else if (state == PLAYSTATE) {
-			// temp
-			// DummyPlayer dplayer = new DummyPlayer();
-			// SaveConfiguration temp = new SaveConfiguration(0, 0, dplayer);
-
 			return new PlayState(this);
 		}
 		return null;
