@@ -75,9 +75,10 @@ public class Room {
 	// key: name of door, value: actual door
 	private Hashtable<String, Door> doortable;
 
-	public Hashtable<String, Door> getDoortable() {
-		return doortable;
-	}
+	// cameras
+	private float x, y; // game cam
+	private float bx, by; // b2dcam
+	private final float TWEEN = 0.05f; // how fast to tween
 
 	public Room(World world, TiledMap tiledMap, Game game, int id, Sector sector) {
 		// temp
@@ -124,7 +125,7 @@ public class Room {
 				chainShape = createPolyline((PolylineMapObject) object);
 			// parse doors
 			else if (object instanceof RectangleMapObject) {
-					
+
 				RectangleMapObject doorRect = (RectangleMapObject) object;
 				Door door = new Door(world, doorRect);
 				System.out.println("doorRectName: " + doorRect.getName());
@@ -144,7 +145,7 @@ public class Room {
 			fdef.filter.categoryBits = B2DVars.BIT_GROUND;
 			fdef.filter.maskBits = B2DVars.BIT_BOX;
 			fdef.shape = chainShape;
-			
+
 			// Fixture
 			Fixture fixture = body.createFixture(fdef);
 			fixture.setUserData("ground");
@@ -161,23 +162,31 @@ public class Room {
 
 		ChainShape cs = new ChainShape();
 		cs.createChain(worldVertices);
-		
+
 		return cs;
 	}
 
-
 	public void render() {
 
-		// statically get player
+		// updating CAMERAS
 		Body tempPlayer = PlayState.player.getPlayerBody();
+		float finalX = tempPlayer.getPosition().x * 100;
+		float finalY = tempPlayer.getPosition().y * 100;
 
-		// set camera to follow player
-		game.getCam().position.set(tempPlayer.getPosition().x * 100, tempPlayer.getPosition().y * 100, 0);
-
+		// tweening: setting camera to slowly follow player
+		x += (finalX - x) * TWEEN;
+		y += (finalY - y) * TWEEN;
+		game.getCam().position.set(x, y, 0);
 		game.getCam().update();
 
+		// then for b2dcam
+		finalX = tempPlayer.getPosition().x;
+		finalY = tempPlayer.getPosition().y;
+		bx += (finalX - bx) * TWEEN;
+		by += (finalY - by) * TWEEN;
+
 		// set b2dcam/b2d objects to render according to player
-		b2dcam.position.set(PlayState.player.getPlayerBody().getPosition().x, (float) tempPlayer.getPosition().y, 0);
+		b2dcam.position.set(bx, by, 0);
 		b2dcam.update();
 
 		tmr.setView(game.getCam());
@@ -186,7 +195,7 @@ public class Room {
 		b2dr.render(world, b2dcam.combined);
 
 	}
-	
+
 	public void update() {
 		// enemies.update
 		// moving platforms...
@@ -212,5 +221,9 @@ public class Room {
 
 	public void setTmr(OrthogonalTiledMapRenderer tmr) {
 		this.tmr = tmr;
+	}
+
+	public Hashtable<String, Door> getDoortable() {
+		return doortable;
 	}
 }
