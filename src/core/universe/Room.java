@@ -8,6 +8,8 @@ import java.util.Hashtable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -29,6 +32,8 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
+import core.enemies.Crawler;
+import core.enemies.Enemy;
 import core.game.Game;
 import core.handlers.B2DVars;
 import core.handlers.GameStateManager;
@@ -67,6 +72,9 @@ public class Room {
 	// World is passed from Sector class
 	private World world;
 
+	//Enemies
+	private Array<Crawler> crawlers;
+	
 	// game
 	private Game game;
 
@@ -93,6 +101,8 @@ public class Room {
 		this.game = game;
 		this.id = id;
 		this.sector = sector;
+		crawlers = null;
+		
 		tmr = new OrthogonalTiledMapRenderer(tiledMap);
 		doortable = new Hashtable<String, Door>();
 
@@ -102,9 +112,21 @@ public class Room {
 		// get collision layer and then get objects in this layer
 		MapObjects collisionObjects = tiledMap.getLayers().get("collision").getObjects();
 
+		// get enemy layer and then objects within this layer
+		MapObjects enemyObjects = null;
+		for(MapLayer mapLayer: tiledMap.getLayers()) {
+			if(mapLayer.getName().equals("Enemy")) {
+				enemyObjects = mapLayer.getObjects();
+			}
+		}
+
 		// go through all objects and build libgdx2d poly lines where any are
 		// found
 		parsePolyLines(collisionObjects);
+		if(enemyObjects != null) {
+			parseEnemies(enemyObjects);
+		}
+		
 		System.out.println("room created");
 
 	}
@@ -116,7 +138,7 @@ public class Room {
 	 * probably will rename this to ParseAllObjects ... in the layer given
 	 */
 	private void parsePolyLines(MapObjects objects) {
-
+		
 		for (MapObject object : objects) {
 			Shape chainShape;
 
@@ -131,7 +153,8 @@ public class Room {
 				System.out.println("doorRectName: " + doorRect.getName());
 				doortable.put(doorRect.getName(), door);
 				continue;
-			} else
+			}
+			else
 				continue;
 
 			// polylines Body
@@ -143,7 +166,9 @@ public class Room {
 			// Fixture definition
 			FixtureDef fdef = new FixtureDef();
 			fdef.filter.categoryBits = B2DVars.BIT_GROUND;
-			fdef.filter.maskBits = B2DVars.BIT_BOX;
+			fdef.filter.maskBits = B2DVars.BIT_BOX |
+					B2DVars.BIT_ENEMY |
+					B2DVars.BIT_ENEMY_HEAD;
 			fdef.shape = chainShape;
 
 			// Fixture
@@ -151,6 +176,25 @@ public class Room {
 			fixture.setUserData("ground");
 			chainShape.dispose();
 		}
+		
+	}
+	
+	private void parseEnemies(MapObjects objects) {
+		crawlers = new Array<Crawler>();
+		SpriteBatch sb = game.getSb();
+		sb.begin();
+		for (MapObject object: objects) {
+
+				if(object.getName().equals("spikyCrawler")) {
+					Rectangle rect = ((RectangleMapObject) object).getRectangle();
+					crawlers.add(new Crawler(sector.getWorld(), rect.x / PPM,
+							rect.y / PPM));
+					sb.draw(Game.res.getTexture("crawler"), rect.x, rect.y);
+				}
+			
+		}
+		sb.end();
+		
 	}
 
 	private Shape createPolyline(PolylineMapObject pline) {
@@ -197,6 +241,11 @@ public class Room {
 	}
 
 	public void update() {
+		if(getCrawlers() != null) {
+		for(Crawler crawler : getCrawlers()) {
+				crawler.update();
+		}
+		}
 		// enemies.update
 		// moving platforms...
 	}
@@ -225,5 +274,9 @@ public class Room {
 
 	public Hashtable<String, Door> getDoortable() {
 		return doortable;
+	}
+	
+	public Array<Crawler> getCrawlers() {
+		return crawlers;
 	}
 }

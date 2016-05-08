@@ -1,6 +1,6 @@
 package core.savesystem;
 
-import core.player.DummyPlayer;
+//import core.player.DummyPlayer;
 import core.player.Player;
 
 /**

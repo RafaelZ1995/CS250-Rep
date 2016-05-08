@@ -72,7 +72,9 @@ public class Player {
 
 		fdef.shape = shape;
 		fdef.filter.categoryBits = B2DVars.BIT_BOX;
-		fdef.filter.maskBits = B2DVars.BIT_GROUND;
+		fdef.filter.maskBits = B2DVars.BIT_GROUND | 
+				B2DVars.BIT_ENEMY |
+				B2DVars.BIT_ENEMY_HEAD;
 
 		// so that player slides down a wall velocity is towards the wall
 		fdef.friction = (float) 0;

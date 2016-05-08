@@ -16,6 +16,9 @@ private HashMap<String, Texture> pickups;
 		loadTexture("res/frame.png", "frame");
 		loadTexture("res/darkBlueCrystals.png", "blueCrystals");
 		loadTexture("res/blueLightSpace.jpg", "space");
+		//loadTexture("Enemies/spikyCrawler1.png", "spikyCrawler1");
+		//loadTexture("Enemies/spikyCrawler2.png", "spikyCrawler2");
+		//loadTexture("Enemies/crawler.png", "crawler");
 		
 		// menu screen
 		loadTexture("menu/Exit.png", "exit");

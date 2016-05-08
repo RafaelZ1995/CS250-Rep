@@ -1,11 +1,13 @@
 package core.handlers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+import core.enemies.Enemy;
 import core.universe.Door;
 import core.universe.Sector;
 
@@ -32,6 +34,8 @@ public class PlayContactListener implements ContactListener {
 		// Contact is a class that knows two fixtures/objects collide
 		Fixture fa = c.getFixtureA();
 		Fixture fb = c.getFixtureB();
+		
+		int cDef = fa.getFilterData().categoryBits | fb.getFilterData().categoryBits;
 
 		// either fixture might be null sometimes.
 		if (fa == null || fb == null)
@@ -41,6 +45,27 @@ public class PlayContactListener implements ContactListener {
 
 		checkPlayerOnGround(fa, fb);
 		checkPlayerContactWithDoor(fa, fb);
+		
+		switch (cDef) {
+		case B2DVars.BIT_ENEMY_HEAD | B2DVars.BIT_BOX:
+			if(fa.getFilterData().categoryBits == B2DVars.BIT_ENEMY_HEAD) {
+				((Enemy)fa.getUserData()).hitOnHead();
+			}
+			else if(fb.getFilterData().categoryBits == B2DVars.BIT_ENEMY_HEAD) {
+				((Enemy)fb.getUserData()).hitOnHead();
+			} 
+			break;
+		case B2DVars.BIT_ENEMY | B2DVars.BIT_GROUND:
+			if(fa.getFilterData().categoryBits == B2DVars.BIT_ENEMY) {
+				((Enemy)fa.getUserData()).reverseVelocity(true, false);
+			}
+			else {
+				((Enemy)fb.getUserData()).reverseVelocity(true, false);
+			}
+			break;
+		case B2DVars.BIT_BOX | B2DVars.BIT_ENEMY: 
+			Gdx.app.log("USER", "DAMAGED");
+		}
 
 	}
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.physics.box2d.World;
 
+import core.enemies.Crawler;
 import core.game.Game;
 import core.handlers.GameStateManager;
 import core.handlers.MusicHandler;
@@ -23,7 +24,7 @@ public class PlayState extends GameState {
 
 	// temp
 	public static Player player;
-
+	
 	private Universe universe;
 
 	// get world from universe.sector
@@ -75,6 +76,8 @@ public class PlayState extends GameState {
 
 		// music handler
 		musicHandler = new MusicHandler(gsm);
+		
+		//crawler = new Crawler(this, .32f, .32f);//temporary
 	}
 
 	@Override
@@ -86,6 +89,7 @@ public class PlayState extends GameState {
 	public void update(float dt) {
 		universe.update();
 		player.update();
+		//crawler.update(dt);
 		hud.update();
 		musicHandler.render();
 		// System.out.println(dplayer.getPlayerBody().getPosition());
@@ -99,6 +103,8 @@ public class PlayState extends GameState {
 		// System.out.println("playstate rendering");
 		universe.render();
 		hud.render();
+		
+		//crawler.draw(game.getSb());
 
 	}
 

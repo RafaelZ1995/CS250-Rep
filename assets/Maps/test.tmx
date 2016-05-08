@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="8" tilewidth="32" tileheight="32" nextobjectid="3">
+ <tileset firstgid="1" name="blocks" tilewidth="32" tileheight="32" tilecount="256" columns="16">
+  <image source="blocks.png" width="512" height="512"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="80" height="8">
+  <data encoding="base64" compression="zlib">
+   eJztltEJwCAMRFOcwGncf6Gu0H6IEMJdGiW2P31wVCImekSsSKfKTwG6HJVAzrd8bUora2bXRvD8sXMVaAZ2jui4gXGkXhYj3+g7Ee5fpO8sVX3RvrPP8jS/wzsL8qmQuIfuR9RnO87D4pFa3r1m60fsMNJ43tl67C6jve3qh6waXr5obubd/+520NtrhUDvBtKZKO+f4EutcAMtYVDk
+  </data>
+ </layer>
+ <objectgroup name="collision">
+  <object id="2" x="196" y="114">
+   <polyline points="0,0 56,0 93,-21 185,-68 225,-59 268,-67 277,-66"/>
+  </object>
+ </objectgroup>
+</map>
