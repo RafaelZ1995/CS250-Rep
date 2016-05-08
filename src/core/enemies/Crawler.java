@@ -32,7 +32,7 @@ public class Crawler extends Enemy{
 		frames = new Array<TextureRegion>();
 		setToDestroy = false;
 		destroyed = false;
-		//frames.add(new TextureRegion(Game.res.getTexture("crawler")));
+		frames.add(new TextureRegion(Game.res.getTexture("crawler")));
 		//frames.add(new TextureRegion(Game.res.getTexture("spikyCrawler1")));
 		//frames.add(new TextureRegion(Game.res.getTexture("spikyCrawler2")));
 

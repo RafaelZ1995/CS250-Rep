@@ -185,10 +185,9 @@ public class Room {
 		sb.begin();
 		for (MapObject object: objects) {
 
-				if(object.getName().equals("spikyCrawler")) {
+				if(object.getName().equals("crawler")) {
 					Rectangle rect = ((RectangleMapObject) object).getRectangle();
-					crawlers.add(new Crawler(sector.getWorld(), rect.x / PPM,
-							rect.y / PPM));
+					crawlers.add(new Crawler(sector.getWorld(), rect.x / PPM, rect.y / PPM));
 					sb.draw(Game.res.getTexture("crawler"), rect.x, rect.y);
 				}
 			
