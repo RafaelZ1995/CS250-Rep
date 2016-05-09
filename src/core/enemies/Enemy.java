@@ -18,10 +18,11 @@ import core.states.PlayState;
  * 
  * 
  */
-public abstract class Enemy extends Sprite {
+public abstract class Enemy extends Sprite{
 	protected World world;
 	//protected PlayState playState;
 	public Body enemyBody;
+	private boolean right;
 	
 	public Vector2 velocity;
 	
@@ -59,8 +60,18 @@ public abstract class Enemy extends Sprite {
 			velocity.x = -velocity.x;
 		}
 		if(y) {
-			velocity.y = -velocity.y;
+			//System.out.println("vel: " + enemyBody.getLinearVelocity().y);
+			velocity.x = -velocity.x;
 		}
+	}
+	
+	public void reverse(){
+		//right = !right;
+		velocity.x = -velocity.x;
+	}
+	
+	public boolean getIsRight(){
+		return right;
 	}
 	
 	/**

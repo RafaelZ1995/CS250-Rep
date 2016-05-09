@@ -55,14 +55,22 @@ public class PlayContactListener implements ContactListener {
 				((Enemy)fb.getUserData()).hitOnHead();
 			} 
 			break;
-		case B2DVars.BIT_ENEMY | B2DVars.BIT_GROUND:
+		case B2DVars.BIT_ENEMY | B2DVars.BIT_ENEMY:
 			if(fa.getFilterData().categoryBits == B2DVars.BIT_ENEMY) {
-				((Enemy)fa.getUserData()).reverseVelocity(true, false);
+				//((Enemy)fa.getUserData()).reverseVelocity(true, false);
+				((Enemy)fa.getUserData()).reverse();
+				//((Enemy)fb.getUserData()).reverse();
 			}
 			else {
-				((Enemy)fb.getUserData()).reverseVelocity(true, false);
+				//((Enemy)fb.getUserData()).reverseVelocity(true, false);
+				((Enemy)fb.getUserData()).reverse();
+				//
+				((Enemy)fa.getUserData()).reverse();
+
 			}
 			break;
+			
+			
 		case B2DVars.BIT_BOX | B2DVars.BIT_ENEMY: 
 			Gdx.app.log("USER", "DAMAGED");
 		}

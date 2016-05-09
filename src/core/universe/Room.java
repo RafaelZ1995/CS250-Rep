@@ -101,7 +101,7 @@ public class Room {
 		this.game = game;
 		this.id = id;
 		this.sector = sector;
-		crawlers = null;
+		crawlers = new Array<Crawler>();
 		
 		tmr = new OrthogonalTiledMapRenderer(tiledMap);
 		doortable = new Hashtable<String, Door>();
@@ -181,18 +181,15 @@ public class Room {
 	
 	private void parseEnemies(MapObjects objects) {
 		crawlers = new Array<Crawler>();
-		SpriteBatch sb = game.getSb();
-		sb.begin();
+		
 		for (MapObject object: objects) {
 
 				if(object.getName().equals("crawler")) {
 					Rectangle rect = ((RectangleMapObject) object).getRectangle();
-					crawlers.add(new Crawler(sector.getWorld(), rect.x / PPM, rect.y / PPM));
-					sb.draw(Game.res.getTexture("crawler"), rect.x, rect.y);
+					crawlers.add(new Crawler(sector.getWorld(), rect.x / PPM, rect.y / PPM, game));
 				}
-			
 		}
-		sb.end();
+		
 		
 	}
 
@@ -236,15 +233,17 @@ public class Room {
 
 		tmr.render();
 		b2dr.render(world, b2dcam.combined);
-
+		for (Crawler crawl : crawlers) {
+			crawl.render();
+		}
 	}
 
 	public void update() {
-		if(getCrawlers() != null) {
+
 		for(Crawler crawler : getCrawlers()) {
 				crawler.update();
 		}
-		}
+		
 		// enemies.update
 		// moving platforms...
 	}

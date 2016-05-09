@@ -26,12 +26,14 @@ public class Crawler extends Enemy{
 	private Array<TextureRegion> frames;
 	private boolean setToDestroy;
 	private boolean destroyed;
+	private Game game;
 	
-	public Crawler(World world, float x, float y) {
+	public Crawler(World world, float x, float y, Game game) {
 		super(world, x, y);
 		frames = new Array<TextureRegion>();
 		setToDestroy = false;
 		destroyed = false;
+		this.game = game;
 		frames.add(new TextureRegion(Game.res.getTexture("crawler")));
 		//frames.add(new TextureRegion(Game.res.getTexture("spikyCrawler1")));
 		//frames.add(new TextureRegion(Game.res.getTexture("spikyCrawler2")));
@@ -52,10 +54,10 @@ public class Crawler extends Enemy{
 			//stateTime = 0;
 		}
 		else if(!destroyed) {
-			enemyBody.setLinearVelocity(velocity);
+			enemyBody.setLinearVelocity(velocity.x, enemyBody.getLinearVelocity().y);
 			setPosition(enemyBody.getPosition().x - getWidth() / 2, enemyBody.getPosition().y - getHeight() / 2);
 			//setRegion(walkAnimation.getKeyFrame(stateTime, true));
-		}
+		} 
 		
 	}
 
@@ -67,30 +69,24 @@ public class Crawler extends Enemy{
 		enemyBody = world.createBody(enemyBDef);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(5 / PPM, 20 / PPM);
+		shape.setAsBox(10 / PPM, 10 / PPM);
 		
 		FixtureDef enemyFDef = new FixtureDef();
 		enemyFDef.filter.categoryBits = B2DVars.BIT_ENEMY;
 		enemyFDef.filter.maskBits = B2DVars.BIT_GROUND | 
 				B2DVars.BIT_BALL | 
-				B2DVars.BIT_BOX;
+				B2DVars.BIT_BOX |
+				B2DVars.BIT_ENEMY |
+				B2DVars.BIT_ENEMY_HEAD;
 		enemyFDef.shape = shape;
 		enemyBody.createFixture(enemyFDef).setUserData(this);
 		
-		/*
-		setMaxHp(5);
-		setDamage(5);
-		*/
+		
 		
 		// Create Head of crawler
 		PolygonShape head = new PolygonShape();
-		Vector2[] vertices = new Vector2[4];
-		vertices[0] = new Vector2(-5, 5).scl(1 / PPM);
-		vertices[1] = new Vector2(5, 5).scl(1 / PPM);
-		vertices[2] = new Vector2(-3, 3).scl(1 / PPM);
-		vertices[3] = new Vector2(3, 3).scl(1 / PPM);
-		head.set(vertices);
-		
+		head.setAsBox(7 / PPM, 3 / PPM, new Vector2(0, 10/PPM), 0);
+
 		enemyFDef.shape = head;
 		// bounciness. if value = 1, 100% bounce back. 10 pixels high, bounce back 10 pixels
 		enemyFDef.restitution = 0.5f;
@@ -104,6 +100,22 @@ public class Crawler extends Enemy{
 	@Override
 	public void hitOnHead() {
 		setToDestroy = true;
+	}
+	
+	public void hitByEnemy(Enemy enemy) {
+		if(enemy instanceof Crawler) {
+			reverseVelocity(true, false);
+		}
+		
+	}
+	
+	public void render() {
+		SpriteBatch sb = game.getSb();
+		sb.setProjectionMatrix(game.getCam().combined);
+		sb.begin();
+		sb.draw(Game.res.getTexture("crawler"), enemyBody.getPosition().x*PPM - 16, enemyBody.getPosition().y*PPM- 12, 32, 32);
+		sb.end();
+		
 	}
 	
 	
