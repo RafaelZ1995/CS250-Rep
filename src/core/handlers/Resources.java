@@ -14,11 +14,13 @@ private HashMap<String, Texture> pickups;
 		pickups = new HashMap<String, Texture>();
 		// load all textures
 		loadTexture("res/frame.png", "frame");
+		loadTexture("res/smoothframe.png", "smoothframe");
 		loadTexture("res/darkBlueCrystals.png", "blueCrystals");
 		loadTexture("res/blueLightSpace.jpg", "space");
+		loadTexture("res/doorArt.png", "doorArt");
 		//loadTexture("Enemies/spikyCrawler1.png", "spikyCrawler1");
-		//loadTexture("Enemies/spikyCrawler2.png", "spikyCrawler2");
 		loadTexture("Enemies/crawler.png", "crawler");
+		loadTexture("Enemies/crawler2.png", "crawler2");
 		
 		// menu screen
 		loadTexture("menu/Exit.png", "exit");

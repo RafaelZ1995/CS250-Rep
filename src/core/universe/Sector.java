@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Stack;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -87,27 +88,20 @@ public class Sector {
 	private void checkForRoomChange() {
 		if (roomToChangeTo != currentRoom) {
 
-			System.out.println("---------------------------------------------------------");
 			setRoom(roomToChangeTo);
 
 			Door out; // door u come out of
 			// decide which position to put player in after changing room
-			System.out.println("size: " + roomStack.peek().getDoortable().toString()); // doortable
-																						// is
-																						// empty
 			if (cl.getDoorUsed().equals("leftDoor")) {
-				System.out.println("OUT IS rightDoor");
 				out = roomStack.peek().getDoortable().get("rightDoor");
 			} else if (cl.getDoorUsed().equals("rightDoor")) {
-				System.out.println("OUT IS leftDoor");
 				out = roomStack.peek().getDoortable().get("leftDoor");
 			} else {
 				out = null;
-				System.out.println("OUT IS NULL");
+				Gdx.app.log("Error", "Out door is null");
 			}
 
 			// change position of player
-			System.out.println(out);
 			Vector2 v = out.getPlayerSpawn();
 			PlayState.player.getPlayerBody().setTransform(v, 0);
 		}

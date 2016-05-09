@@ -127,7 +127,6 @@ public class Room {
 			parseEnemies(enemyObjects);
 		}
 		
-		System.out.println("room created");
 
 	}
 
@@ -149,8 +148,7 @@ public class Room {
 			else if (object instanceof RectangleMapObject) {
 
 				RectangleMapObject doorRect = (RectangleMapObject) object;
-				Door door = new Door(world, doorRect);
-				System.out.println("doorRectName: " + doorRect.getName());
+				Door door = new Door(world, doorRect, game);
 				doortable.put(doorRect.getName(), door);
 				continue;
 			}
@@ -232,7 +230,13 @@ public class Room {
 		tmr.setView(game.getCam());
 
 		tmr.render();
-		b2dr.render(world, b2dcam.combined);
+		//b2dr.render(world, b2dcam.combined);
+		
+		// render doors
+		for (Door d : doortable.values())
+			d.render();
+		
+		// render enemies
 		for (Crawler crawl : crawlers) {
 			crawl.render();
 		}
@@ -252,9 +256,7 @@ public class Room {
 	 * Dispose
 	 */
 	public void dispose() {
-		// tiledMap.dispose(); do not dispose the tiledMap, this is the original
-		// one.
-		System.out.println("Room dipose()");
+		// don't dispose of tiledMap (original one)
 		tmr.dispose();
 		b2dr.dispose();
 	}

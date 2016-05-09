@@ -2,6 +2,8 @@ package core.universe;
 
 import static core.handlers.B2DVars.PPM;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import core.game.Game;
 import core.handlers.B2DVars;
 
 /**
@@ -63,20 +66,26 @@ public class Door {
 
 	// location
 	float x, y;
-	
+
 	// Shape
-	Rectangle doorShape;
+	private Rectangle doorShape;
 
 	// where player should spawn if it comes out of this door
-	Vector2 playerSpawn;
+	private Vector2 playerSpawn;
 
-	public Door(World world, RectangleMapObject rectObject) {
+	private Game game;
+
+	private SpriteBatch sb;
+
+	public Door(World world, RectangleMapObject rectObject, Game game) {
 		this.doorShape = rectObject.getRectangle();
 		this.width = doorShape.width;
 		this.height = doorShape.height;
 		this.x = doorShape.x;
 		this.y = doorShape.y;
 		this.name = rectObject.getName();
+		this.game = game;
+		this.sb = game.getSb();
 
 		// bdef
 		BodyDef bdef = new BodyDef();
@@ -110,14 +119,26 @@ public class Door {
 
 		// createplayer spawn
 		if (name.equals("leftDoor")) {
-			playerSpawn = new Vector2(doorBody.getPosition().x + 0.2f, doorBody.getPosition().y); // + 0.2f so that it doesnt
-													// spawn on door
+			playerSpawn = new Vector2(doorBody.getPosition().x + 0.2f, doorBody.getPosition().y); // +
+																									// 0.2f
+																									// so
+																									// that
+																									// it
+																									// doesnt
+			// spawn on door
 		} else if (name.equals("rightDoor")) {
 			playerSpawn = new Vector2(doorBody.getPosition().x - 0.2f, doorBody.getPosition().y);
 		} else {
-			System.out.println("player spawn is NULL");
+			Gdx.app.log("Error", "Player spawn is Null");
 			playerSpawn = null;
 		}
+	}
+
+	public void render() {
+		sb.setProjectionMatrix(game.getCam().combined);
+		sb.begin();
+		sb.draw(Game.res.getTexture("doorArt"), x - 20, y, 32, 64);
+		sb.end();
 	}
 
 	public Vector2 getPlayerSpawn() {

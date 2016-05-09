@@ -92,7 +92,6 @@ public class PlayState extends GameState {
 		//crawler.update(dt);
 		hud.update();
 		musicHandler.render();
-		// System.out.println(dplayer.getPlayerBody().getPosition());
 		// world step is done in Sector's update
 	}
 
@@ -100,8 +99,8 @@ public class PlayState extends GameState {
 	public void render() {
 
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT); // already done in Game?
-		// System.out.println("playstate rendering");
 		universe.render();
+		player.render();
 		hud.render();
 		
 		//crawler.draw(game.getSb());

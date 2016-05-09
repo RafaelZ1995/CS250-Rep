@@ -50,7 +50,6 @@ public class GameStateManager {
 	// popState()
 	private void popState() {
 		GameState g = gamestates.pop();
-		System.out.println("disposing from gsm");
 		g.dispose();
 	}
 

@@ -60,7 +60,6 @@ public abstract class Enemy extends Sprite{
 			velocity.x = -velocity.x;
 		}
 		if(y) {
-			//System.out.println("vel: " + enemyBody.getLinearVelocity().y);
 			velocity.x = -velocity.x;
 		}
 	}

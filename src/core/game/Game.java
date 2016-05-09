@@ -20,7 +20,7 @@ import core.universe.Universe;
 public class Game implements ApplicationListener {
 
 	// public variables
-	public static final String Title = "Z";
+	public static final String Title = "unTiled";
 	public static final int V_WIDTH = 320; // virtual size, independent of
 											// screen size
 	public static final int V_HEIGHT = 240;

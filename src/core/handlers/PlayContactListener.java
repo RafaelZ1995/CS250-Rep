@@ -7,7 +7,9 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+import core.enemies.Crawler;
 import core.enemies.Enemy;
+import core.player.Player;
 import core.universe.Door;
 import core.universe.Sector;
 
@@ -64,21 +66,28 @@ public class PlayContactListener implements ContactListener {
 			else {
 				//((Enemy)fb.getUserData()).reverseVelocity(true, false);
 				((Enemy)fb.getUserData()).reverse();
-				//
-				((Enemy)fa.getUserData()).reverse();
+				
+				//((Enemy)fa.getUserData()).reverse();
 
 			}
 			break;
 			
 			
 		case B2DVars.BIT_BOX | B2DVars.BIT_ENEMY: 
-			Gdx.app.log("USER", "DAMAGED");
+			if(fa.getUserData() instanceof Player) {
+				((Player)fa.getUserData()).setHealth(((Crawler)fb.getUserData()).getDMG());
+			}
+			else if(fb.getUserData() instanceof Player) {
+				((Player)fb.getUserData()).setHealth(((Crawler)fa.getUserData()).getDMG());
+			}
+			//Gdx.app.log("USER", "DAMAGED");
+			break;
+			
 		}
 
 	}
 
 	private void checkPlayerOnGround(Fixture fa, Fixture fb) {
-		//System.out.println("fa: " + fa.getUserData() + "  fb: " + fb.getUserData());
 		if (fa.getUserData().equals("foot")) {
 			featuresInContact++;
 		}
@@ -100,7 +109,7 @@ public class PlayContactListener implements ContactListener {
 	}
 
 	private void checkPlayerContactWithDoor(Fixture fa, Fixture fb) {
-		if (fa.getUserData().equals("playerBody") || fb.getUserData().equals("playerBody")) {
+		if (fa.getUserData() instanceof Player || fb.getUserData() instanceof Player) {
 			if (fa.getUserData() instanceof Door || fb.getUserData() instanceof Door) {
 
 				if (fa.getUserData() instanceof Door) {

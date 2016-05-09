@@ -18,6 +18,7 @@ public class HealthBar {
 	private GameStateManager gsm;
 	private long startTime;
 	private long elapsedTime;
+	private double LENGTH = 0.25;
 
 	public HealthBar(GameStateManager gsm) {
 
@@ -31,7 +32,7 @@ public class HealthBar {
 
 		batch = gsm.getGame().getSb();
 		myBitmap = new BitmapFont();
-		myHealth = "Health: " + PlayState.player.updateHealth();
+		myHealth = "Health: " + PlayState.player.getCurrentHealth();
 		// startTime = System.currentTimeMillis();
 
 	}
@@ -39,7 +40,7 @@ public class HealthBar {
 	public void update() {
 
 		// update health by calling updateHealth() from Player class
-		myHealth = "Health: " + PlayState.player.updateHealth();
+		myHealth = "Health: " + PlayState.player.getCurrentHealth();
 
 	}
 
@@ -49,14 +50,13 @@ public class HealthBar {
 		myBitmap.setColor(Color.CLEAR);
 
 		elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
-		System.out.println(elapsedTime);
 
 		// give player a warning if their health falls to 30% or below
 		// by flashing the healthbar
 		if (PlayState.player.getCurrentHealth() <= 3) {
-			if (elapsedTime <= 0.5)
+			if (elapsedTime <= LENGTH)
 				myBitmap.setColor(Color.RED);
-			else if (elapsedTime > 0.5 && elapsedTime <= 1)
+			else if (elapsedTime > LENGTH && elapsedTime <= 1)
 				myBitmap.setColor(Color.CLEAR);
 			else {
 				startTime = System.currentTimeMillis();

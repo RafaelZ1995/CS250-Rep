@@ -27,7 +27,7 @@ public class MenuState extends GameState {
 	private BitmapFont titleFont;
 	private BitmapFont font;
 
-	private final String title = "JRTC";
+	private final String title = "unTiled";
 
 	private int currentItem;
 	private String[] menuItems;
@@ -69,9 +69,7 @@ public class MenuState extends GameState {
 		sb.begin();
 
 		float width = 40;
-		// titleFont.draw(sb, "GAME!!!", (gsm.getGame().V_WIDTH - width) / 2,
-		// 300);
-
+		
 		// draw menu
 		// int[] widthArr = new int[menuItems.length];
 		for (int i = 0; i < menuItems.length; i++) {
@@ -83,7 +81,6 @@ public class MenuState extends GameState {
 				sb.draw(Game.res.getPickup("life"), x - 50, y, 40, 40);
 			}
 
-			System.out.println(Game.res.getTexture("newgame"));
 			if (i == 0)
 				sb.draw(Game.res.getTexture("newgame"), x, y, 240, 40);
 

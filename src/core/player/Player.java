@@ -2,6 +2,7 @@ package core.player;
 
 import static core.handlers.B2DVars.PPM;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -29,7 +30,7 @@ public class Player {
 
 	private String displayHealth;
 	private BitmapFont myBitmap;
-	private final int TOTAL_HEALTH = 10;
+	private final int TOTAL_HEALTH = 2;
 	private boolean isPlayerHit;
 
 	private long startTime; // for dashing
@@ -40,12 +41,20 @@ public class Player {
 
 	private World world;
 
+	// Position
+	private float x;
+	private float y;
+
+	// Properties
+	private float width;
+	private float height;
+
 	// Motion
 	private final float ACC = (float) 0.4; // acceleration
 	private final float DACC = (float) 0.2; // deacceleration
 	private final float MAX_SPEED = (float) 2.3;
 	private float speed;
-	
+
 	// Health
 	private boolean isDead;
 	private boolean isHit;
@@ -53,34 +62,42 @@ public class Player {
 	private int currentHealth;
 	private int damage;
 
+	// spritebatch
+	private SpriteBatch sb;
+
 	public Player(World world, GameStateManager gsm) {
 
 		this.cl = Game.universe.getCurrentSector().getContactListener();
 		this.gsm = gsm;
 		this.world = world;
+		sb = gsm.getGame().getSb();
 		myinput = new MyInput();
+
+		x = 400 / PPM;
+		y = 300 / PPM;
+
+		width = 5 / PPM;
+		height = 5 / PPM;
 
 		// create box player
 		BodyDef bdef = new BodyDef();
-		bdef.position.set(160 / PPM, 200 / PPM);
+		bdef.position.set(x, y);
 		bdef.type = BodyType.DynamicBody;
-		
+
 		playerBody = world.createBody(bdef);
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(5 / PPM, 5 / PPM);
+		shape.setAsBox(width, height);
 		FixtureDef fdef = new FixtureDef();
 
 		fdef.shape = shape;
 		fdef.filter.categoryBits = B2DVars.BIT_BOX;
-		fdef.filter.maskBits = B2DVars.BIT_GROUND | 
-				B2DVars.BIT_ENEMY |
-				B2DVars.BIT_ENEMY_HEAD;
+		fdef.filter.maskBits = B2DVars.BIT_GROUND | B2DVars.BIT_ENEMY | B2DVars.BIT_ENEMY_HEAD;
 
 		// so that player slides down a wall velocity is towards the wall
 		fdef.friction = (float) 0;
 
 		Fixture fixture = playerBody.createFixture(fdef);
-		fixture.setUserData("playerBody");
+		fixture.setUserData(this);
 
 		// foot sensor fixture to detect ground.
 		shape.setAsBox(2 / PPM, 2 / PPM, new Vector2(0, -7 / PPM), 0);
@@ -88,10 +105,10 @@ public class Player {
 		fixture = playerBody.createFixture(fdef);
 		fixture.setUserData("foot");
 
-		startTime = (long) (TimeUtils.millis() - (coolDownTime * 1000));
 		// 2 seconds is subtracted or else there will be error when special is
 		// activated for first time
-		
+		startTime = (long) (TimeUtils.millis() - (coolDownTime * 1000));
+
 		// set health
 		currentHealth = TOTAL_HEALTH;
 
@@ -101,7 +118,6 @@ public class Player {
 
 		// calculate cooldowns for special abilities
 		updateCooldowns();
-		updateHealth();
 
 		// eventually we would want a boolean to check if we are using any
 		// ability at all
@@ -111,11 +127,14 @@ public class Player {
 		calculateAbilities(); // checks dash
 
 		// finally update position here
-		float linearY = playerBody.getLinearVelocity().y; 
+		float linearY = playerBody.getLinearVelocity().y;
 		// get the linear Velocity y, and use it for setLinearVelocity
 		playerBody.setLinearVelocity(speed, linearY);
 		// that way we are not changing it to 0.
 
+		// update position
+		x = playerBody.getPosition().x * PPM;
+		y = playerBody.getPosition().y * PPM;
 	}
 
 	private void calculateAbilities() {
@@ -164,36 +183,11 @@ public class Player {
 
 	// cool-down for special ability
 	private void updateCooldowns() {
-
 		elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
-
 	}
 
-	public int updateHealth() {
-		
-		currentHealth = 2;
-		// decrement health if player is attacked 
-		if (isPlayerHit == true) 
-			currentHealth--;
-		
-		 if(currentHealth == 0) {
-			 
-			 System.out.println("Game Over");
-			 
-		 }
-		 
-		return currentHealth;
-		
-	}
-	
-//	public boolean isPlayerHit() {
-//		
-//	}
-	
 	public int getCurrentHealth() {
-		
 		return currentHealth;
-		
 	}
 
 	// if cool-down time is
@@ -201,9 +195,6 @@ public class Player {
 
 		if (elapsedTime >= coolDownTime) {
 			startTime = System.currentTimeMillis();
-			// System.out.println("Time elapsed in seconds = " +
-			// ((System.currentTimeMillis() - startTime) / 1000));
-
 			// if character is facing right, activating special ability will
 			// move character right, else left
 			if (isFacingRight == true) {
@@ -211,31 +202,28 @@ public class Player {
 			} else {
 				speed = -5;
 			}
-		} else
-			System.out.println((coolDownTime - elapsedTime) + " more seconds until attack recharges.");
+		}
+		// else
+		// System.out.println((coolDownTime - elapsedTime) + " more seconds
+		// until attack recharges.");
 
 	}
 
 	public Body getPlayerBody() {
-		
 		return playerBody;
-		
 	}
 
 	public void render() {
-
+		sb.setProjectionMatrix(gsm.getGame().getCam().combined);
+		sb.begin();
+		sb.draw(Game.res.getPickup("life"), x - 16, y - 16, 32, 32);
+		sb.end();
 	}
-	
-}
 
-// public void update(float dt) {
-//
-// // check if hit
-// // check lives
-// // turning
-// // accelerating
-// // deceleration
-//
-// // collision detection
-//
-// }
+	public void setHealth(int n) {
+		currentHealth -= n;
+		if (currentHealth < 1)
+			Gdx.app.log("player", "died");
+	}
+
+}
