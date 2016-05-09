@@ -61,6 +61,8 @@ public class HealthBar {
 			else {
 				startTime = System.currentTimeMillis();
 			}
+		}else{
+			myBitmap.setColor(Color.BLUE);
 		}
 		
 		myBitmap.draw(batch, myHealth, 25, 100);

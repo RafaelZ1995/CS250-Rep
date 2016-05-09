@@ -30,7 +30,7 @@ public class Player {
 
 	private String displayHealth;
 	private BitmapFont myBitmap;
-	private final int TOTAL_HEALTH = 2;
+	private final int TOTAL_HEALTH = 5;
 	private boolean isPlayerHit;
 
 	private long startTime; // for dashing

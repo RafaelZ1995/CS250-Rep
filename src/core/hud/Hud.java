@@ -38,7 +38,7 @@ public class Hud {
 		
 		sb.setProjectionMatrix(hudCam.combined);
 		sb.begin();
-		//sb.draw(Game.res.getTexture("frame"), 0, 0);
+		sb.draw(Game.res.getTexture("frame"), 0, 0);
 		hp.render();
 		sb.end();
 		
