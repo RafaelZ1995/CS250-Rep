@@ -2,6 +2,7 @@ package core.game;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -94,6 +95,9 @@ public class Game implements ApplicationListener {
 
 	public void update(float dt) {
 
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE)){
+			gsm.setState(gsm.MENUSTATE);
+		}
 	
 	}
 

@@ -59,15 +59,13 @@ public class PlayContactListener implements ContactListener {
 			break;
 		case B2DVars.BIT_ENEMY | B2DVars.BIT_ENEMY:
 			if(fa.getFilterData().categoryBits == B2DVars.BIT_ENEMY) {
-				//((Enemy)fa.getUserData()).reverseVelocity(true, false);
-				((Enemy)fa.getUserData()).reverse();
-				//((Enemy)fb.getUserData()).reverse();
+				((Enemy)fa.getUserData()).reverseVelocity(true, false);
+				//((Enemy)fa.getUserData()).reverse();
 			}
 			else {
-				//((Enemy)fb.getUserData()).reverseVelocity(true, false);
-				((Enemy)fb.getUserData()).reverse();
+				((Enemy)fb.getUserData()).reverseVelocity(true, false);
+				//((Enemy)fb.getUserData()).reverse();
 				
-				//((Enemy)fa.getUserData()).reverse();
 
 			}
 			break;
@@ -75,10 +73,22 @@ public class PlayContactListener implements ContactListener {
 			
 		case B2DVars.BIT_BOX | B2DVars.BIT_ENEMY: 
 			if(fa.getUserData() instanceof Player) {
-				((Player)fa.getUserData()).setHealth(((Crawler)fb.getUserData()).getDMG());
+				Player player = (Player)fa.getUserData();
+				if (!player.isDashing())
+					player.setHealth(((Crawler)fb.getUserData()).getDMG());
+				else{ // if dashing
+					Crawler cr = (Crawler)fb.getUserData();
+					cr.enemyBody.applyLinearImpulse(0, 5, cr.getX(), cr.getY(), true);
+				}
 			}
 			else if(fb.getUserData() instanceof Player) {
-				((Player)fb.getUserData()).setHealth(((Crawler)fa.getUserData()).getDMG());
+				Player player = (Player)fb.getUserData();
+				if (!player.isDashing())
+					player.setHealth(((Crawler)fa.getUserData()).getDMG());
+				else{ // if dashing
+					Crawler cr = (Crawler)fa.getUserData();
+					cr.enemyBody.applyLinearImpulse(0, 5, cr.getX(), cr.getY(), true);
+				}
 			}
 			//Gdx.app.log("USER", "DAMAGED");
 			break;

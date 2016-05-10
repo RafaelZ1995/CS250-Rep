@@ -25,12 +25,11 @@ private HashMap<String, Texture> pickups;
 		// menu screen
 		loadTexture("menu/Exit.png", "exit");
 		loadTexture("menu/New Game.png", "newgame");
-		//loadTexture("menu/select.png", "select");
-		//loadTexture("menu/mainscreen bg.png", "mainscreen bg");
-		//loadTexture("menu/bg0.png", "bg0");
 		loadTexture("menu/bg1.png", "bg1");
 		
 		loadPickup("pickups/life.png", "life");
+		loadPickup("pickups/hit.png", "hit");
+		loadPickup("pickups/dash.png", "dash");
 	}
 	
 	public void loadPickup(String path, String key) {

@@ -2,6 +2,8 @@ package core.enemies;
 
 import static core.handlers.B2DVars.PPM;
 
+import java.util.Random;
+
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -17,6 +19,7 @@ import core.handlers.B2DVars;
 
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Crawler extends Enemy {
 
@@ -27,6 +30,11 @@ public class Crawler extends Enemy {
 	private boolean destroyed;
 	private Game game;
 	private final int DMG = 1;
+	
+	private long startTime; // to change direction
+	private long elapsedTime;
+	private boolean change; // direction
+	private int duration;
 	
 	
 
@@ -47,9 +55,24 @@ public class Crawler extends Enemy {
 		// setBounds(getX(), getY(), 16 / PPM, 16 / PPM); // boundaries of the
 		// sprite
 
+
+		startTime = (long) (TimeUtils.millis());
+		Random rn = new Random();
+		int answer = rn.nextInt(10) + 3;
+		duration = answer;
 	}
+	
+	
 
 	public void update() {
+
+		elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
+		if (elapsedTime >= duration) {
+			change = true;
+			startTime = System.currentTimeMillis();
+		}
+		
+		
 		 stateTime += 0.01;
 		if (setToDestroy && !destroyed) {
 			world.destroyBody(enemyBody);
@@ -57,6 +80,12 @@ public class Crawler extends Enemy {
 			// setRegion(new TextureRegion(region)); smushed goomba sprite
 			 stateTime = 0;
 		} else if (!destroyed) {
+			
+			if (change){
+				velocity.x = - velocity.x;
+				change = false;
+			}
+			
 			enemyBody.setLinearVelocity(velocity.x, enemyBody.getLinearVelocity().y);
 			setPosition(enemyBody.getPosition().x - getWidth() / 2, enemyBody.getPosition().y - getHeight() / 2);
 			//setRegion(walkAnimation.getKeyFrame(stateTime, true));

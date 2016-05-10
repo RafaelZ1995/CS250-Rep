@@ -1,5 +1,7 @@
 package core.enemies;
 
+import java.util.Random;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
@@ -25,19 +27,6 @@ public abstract class Enemy extends Sprite{
 	private boolean right;
 	
 	public Vector2 velocity;
-	
-	/**
-	protected int maxHealth; // Enemy's max health
-	protected int currHealth; // Current health of enemy
-	protected int damage; // Damage of the enemy upon contact
-	protected boolean dead; // Is the enemy dead or alive
-	
-	protected BodyDef enemyBDef;
-	protected FixtureDef enemyFDef;
-
-	protected Body enemyBody;
-	
-	**/
 	
 	/**
 	 * 

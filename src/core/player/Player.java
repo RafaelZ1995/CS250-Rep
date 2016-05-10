@@ -115,6 +115,7 @@ public class Player {
 	}
 
 	public void update() {
+		//System.out.println(dashing);
 
 		// calculate cooldowns for special abilities
 		updateCooldowns();
@@ -135,6 +136,10 @@ public class Player {
 		// update position
 		x = playerBody.getPosition().x * PPM;
 		y = playerBody.getPosition().y * PPM;
+	}
+
+	public boolean isDashing() {
+		return dashing;
 	}
 
 	private void calculateAbilities() {
@@ -216,7 +221,12 @@ public class Player {
 	public void render() {
 		sb.setProjectionMatrix(gsm.getGame().getCam().combined);
 		sb.begin();
-		sb.draw(Game.res.getPickup("life"), x - 16, y - 16, 32, 32);
+		if (currentHealth <= 3 && !dashing)
+			sb.draw(Game.res.getPickup("hit"), x - 16, y - 16, 32, 32);
+		else if (dashing)
+			sb.draw(Game.res.getPickup("dash"), x - 16, y - 16, 32, 32);
+		else
+			sb.draw(Game.res.getPickup("life"), x - 16, y - 16, 32, 32);
 		sb.end();
 	}
 
